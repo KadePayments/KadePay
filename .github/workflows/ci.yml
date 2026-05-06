@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - master
+      - chores/ci-tests-setup
   pull_request:
     branches:
       - master
