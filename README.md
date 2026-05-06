@@ -17,7 +17,7 @@
 **KadePay** is a self-hosted server for accepting off-chain Bitcoin payments powered by Arkade.
 ⚠ **Note:** This project is under heavy development, do not use for production.
 
-___
+---
 
 ## Architecture
 
