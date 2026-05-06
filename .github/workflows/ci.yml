@@ -3,11 +3,11 @@ name: KadePay CI
 on:
   push:
     branches:
-      - master
+      - main
       - chores/ci-tests-setup
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   build:

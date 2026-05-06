@@ -134,7 +134,7 @@ compose.desktop {
                 TargetFormat.Exe,
                 TargetFormat.Deb,
                 TargetFormat.Rpm,
-                TargetFormat.AppImage
+                TargetFormat.AppImage,
             )
             packageName = "com.kade.pay"
             packageVersion = "1.0.0"
