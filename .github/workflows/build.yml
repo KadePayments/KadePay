@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  artifacts:
+  linux-artifacts:
     needs: [lint, ktlint]
     runs-on: ubuntu-latest
     environment: Development
@@ -20,28 +20,38 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
-      - name: Build Artifacts
-        run: ./gradlew build
+      - name: Build Linux
+        run: ./gradlew packageDeb packageRpm
+
+      - name: Build Android
+        run: ./gradlew assembleDebug assembleRelease
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v7
         with:
-          name: KadePay-Android
+          name: KadePay-Android-Debug
           path: ./composeApp/build/outputs/apk/debug/*.apk
           if-no-files-found: error
 
       - name: Upload Release APK
         uses: actions/upload-artifact@v7
         with:
-          name: KadePay-Android
+          name: KadePay-Android-Unsigned-Release
           path: ./composeApp/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
-      - name: Upload JAR
+      - name: Upload Linux Debian
         uses: actions/upload-artifact@v7
         with:
-          name: KadePay-JVM
-          path: ./composeApp/build/libs/*-jvm.jar
+          name: KadePay-Linux-Deb
+          path: ./composeApp/build/compose/binaries/*.deb
+          if-no-files-found: error
+
+      - name: Upload Linux RPM
+        uses: actions/upload-artifact@v7
+        with:
+          name: KadePay-Linux-RPM
+          path: ./composeApp/build/compose/binaries/*.rpm
           if-no-files-found: error
 
   lint:
