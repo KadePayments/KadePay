@@ -59,6 +59,13 @@ Contributions are welcome!
 
 Please note that this project is **experimental**, so expect frequent changes.
 
+### Development Environment
+
+#### Setup Pre-commit Hook
+```shell
+cp scripts/pre-commit .git/hooks/
+```
+
 ---
 
 ## License
