@@ -8,6 +8,13 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.ktlintGradle)
+}
+
+ktlint {
+    filter {
+        exclude("**/generated/**")
+    }
 }
 
 kotlin {
@@ -16,7 +23,6 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -26,20 +32,32 @@ kotlin {
             isStatic = true
         }
     }
-    
     jvm()
-    
     js {
-        browser()
+        browser {
+            testTask {
+                useKarma {
+                    useFirefox()
+                    // useChrome()
+                    // useSafari()
+                }
+            }
+        }
         binaries.executable()
     }
-    
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        browser {
+            testTask {
+                useKarma {
+                    useFirefox()
+                    // useChrome()
+                    // useSafari()
+                }
+            }
+        }
         binaries.executable()
     }
-    
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
