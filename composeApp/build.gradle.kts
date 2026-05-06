@@ -128,7 +128,14 @@ compose.desktop {
         mainClass = "com.kade.pay.MainKt"
 
         nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+            targetFormats(
+                TargetFormat.Dmg,
+                TargetFormat.Msi,
+                TargetFormat.Exe,
+                TargetFormat.Deb,
+                TargetFormat.Rpm,
+                TargetFormat.AppImage,
+            )
             packageName = "com.kade.pay"
             packageVersion = "1.0.0"
         }
