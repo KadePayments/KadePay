@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">KadePay</string>
+    <string name="bitcoin">Bitcoin</string>
+    <string name="arkade">Arkade</string>
+    <string name="wallets">Wallets</string>
+    <string name="payments">Payments</string>
+    <string name="invoices">Invoices</string>
+    <string name="paybutton">Pay Button</string>
+</resources>
