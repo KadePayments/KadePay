@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +41,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MainScreen() {
-    var selectedNavItem: SelectedNavItem by remember {
+    var selectedNavItem: SelectedNavItem by rememberSaveable {
         mutableStateOf(SelectedNavItem.Bitcoin)
     }
     Row {
@@ -58,7 +58,7 @@ fun MainScreen() {
                 ) {
                     Icon(
                         painterResource(Res.drawable.kade),
-                        "",
+                        null,
                         Modifier.padding(bottom = 5.dp),
                         tint = MaterialTheme.colorScheme.primary,
                     )
@@ -92,7 +92,7 @@ fun MainScreen() {
                     icon = {
                         Icon(
                             painterResource(Res.drawable.btc),
-                            "",
+                            null,
                             tint = bitcoinIconColor,
                         )
                     },
@@ -107,7 +107,7 @@ fun MainScreen() {
                     icon = {
                         Icon(
                             painterResource(Res.drawable.arkade),
-                            "",
+                            null,
                             tint = arkadeIconColor,
                         )
                     },
@@ -132,7 +132,7 @@ fun MainScreen() {
                     icon = {
                         Image(
                             painterResource(Res.drawable.invoice),
-                            "",
+                            null,
                         )
                     },
                     label = { Text(stringResource(Res.string.invoices)) },
@@ -146,7 +146,7 @@ fun MainScreen() {
                     icon = {
                         Image(
                             painterResource(Res.drawable.btc_logo),
-                            "",
+                            null,
                         )
                     },
                     label = { Text(stringResource(Res.string.paybutton)) },

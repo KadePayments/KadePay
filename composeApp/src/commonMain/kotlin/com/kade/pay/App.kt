@@ -8,7 +8,7 @@ import com.kade.pay.presentation.theme.KadePayTheme
 @Composable
 @Preview
 fun App() {
-    KadePayTheme(false) {
+    KadePayTheme {
         MainScreen()
     }
 }
