@@ -57,11 +57,16 @@ jobs:
           path: ./composeApp/build/compose/binaries/main/rpm/*.rpm
           if-no-files-found: error
 
+      - name: Package AppImage Zip
+        run: |
+          cd ./composeApp/build/compose/binaries/main/app/
+          zip -r com.kade.pay.zip com.kade.pay
+
       - name: Upload Linux AppImage
         uses: actions/upload-artifact@v7
         with:
           name: KadePay-Linux-AppImage
-          path: ./composeApp/build/compose/binaries/main/appimage/*.AppImage
+          path: ./composeApp/build/compose/binaries/main/app/*.zip
           if-no-files-found: error
 
   macos-artifacts:
