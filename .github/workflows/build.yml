@@ -24,7 +24,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Build Linux
-        run: ./gradlew packageDeb packageRpm
+        run: ./gradlew packageDeb packageRpm packageAppImage
 
       - name: Build Android
         run: ./gradlew assembleDebug assembleRelease
