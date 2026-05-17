@@ -24,7 +24,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
 
       - name: Build Linux
-        run: ./gradlew packageDeb packageRpm
+        run: ./gradlew packageDeb packageRpm packageAppImage
 
       - name: Build Android
         run: ./gradlew assembleDebug assembleRelease
@@ -55,6 +55,18 @@ jobs:
         with:
           name: KadePay-Linux-RPM
           path: ./composeApp/build/compose/binaries/main/rpm/*.rpm
+          if-no-files-found: error
+
+      - name: Package AppImage Zip
+        run: |
+          cd ./composeApp/build/compose/binaries/main/app/
+          zip -r com.kade.pay.zip com.kade.pay
+
+      - name: Upload Linux AppImage
+        uses: actions/upload-artifact@v7
+        with:
+          name: KadePay-Linux-AppImage
+          path: ./composeApp/build/compose/binaries/main/app/*.zip
           if-no-files-found: error
 
   macos-artifacts:
