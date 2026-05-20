@@ -1,9 +1,11 @@
 package com.kade.pay.presentation.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -21,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinWalletScreen
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.theme.arkadeIconColor
 import com.kade.pay.presentation.theme.bitcoinIconColor
@@ -44,7 +47,9 @@ fun MainScreen() {
     var selectedNavItem: SelectedNavItem by rememberSaveable {
         mutableStateOf(SelectedNavItem.Bitcoin)
     }
-    Row {
+    Row(
+        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+    ) {
         NavigationRail(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
             header = {
@@ -154,7 +159,9 @@ fun MainScreen() {
             }
         }
         when (selectedNavItem) {
-            is SelectedNavItem.Bitcoin -> {}
+            is SelectedNavItem.Bitcoin -> {
+                BitcoinWalletScreen()
+            }
             is SelectedNavItem.Arkade -> {}
             is SelectedNavItem.Invoices -> {}
             is SelectedNavItem.PayButton -> {}

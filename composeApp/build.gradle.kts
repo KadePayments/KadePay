@@ -62,6 +62,9 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
+
+            implementation(libs.bitcoin.kmp)
+            implementation(libs.secp256k1.kmp)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -79,6 +82,13 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
+
+            implementation(libs.bitcoin.kmp)
+            implementation(libs.secp256k1.kmp)
+        }
+        iosMain.dependencies {
+            implementation(libs.bitcoin.kmp)
+            implementation(libs.secp256k1.kmp)
         }
     }
 }

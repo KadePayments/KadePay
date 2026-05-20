@@ -6,4 +6,9 @@
     <string name="payments">Payments</string>
     <string name="invoices">Invoices</string>
     <string name="paybutton">Pay Button</string>
+    <string name="new">New</string>
+    <string name="import">Import</string>
+    <string name="your_keys">Your keys</string>
+    <string name="receive">Receive</string>
+    <string name="send">Send</string>
 </resources>
