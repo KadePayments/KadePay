@@ -33,31 +33,7 @@ kotlin {
         }
     }
     jvm()
-    js {
-        browser {
-            testTask {
-                useKarma {
-                    useFirefox()
-                    // useChrome()
-                    // useSafari()
-                }
-            }
-        }
-        binaries.executable()
-    }
     @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser {
-            testTask {
-                useKarma {
-                    useFirefox()
-                    // useChrome()
-                    // useSafari()
-                }
-            }
-        }
-        binaries.executable()
-    }
     sourceSets {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
