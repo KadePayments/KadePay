@@ -9,7 +9,11 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ktlintGradle)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.androidx.room)
 }
+
+val currentOs: String = System.getProperty("os.name").lowercase()
 
 ktlint {
     filter {
@@ -17,14 +21,21 @@ ktlint {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 kotlin {
+    jvmToolchain(21)
+
     androidTarget {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_11)
+            jvmTarget.set(JvmTarget.JVM_21)
         }
     }
     listOf(
         iosArm64(),
+        iosX64(),
         iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
@@ -38,9 +49,8 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
-
-            implementation(libs.bitcoin.kmp)
-            implementation(libs.secp256k1.kmp)
+            implementation(libs.androidx.room.sqlite.wrapper)
+            implementation(libs.secp256k1.kmp.jni.android)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -51,6 +61,13 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.compose.navigation)
+
+            implementation(libs.bitcoin.kmp)
+            implementation(libs.secp256k1.kmp)
+
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.androidx.sqlite.bundled)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -58,13 +75,17 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
-
-            implementation(libs.bitcoin.kmp)
-            implementation(libs.secp256k1.kmp)
+            implementation(libs.secp256k1.kmp.jni.jvm)
         }
-        iosMain.dependencies {
-            implementation(libs.bitcoin.kmp)
-            implementation(libs.secp256k1.kmp)
+        jvmTest.dependencies {
+            val targetDep =
+                when {
+                    currentOs.contains("linux") -> libs.secp256k1.kmp.jni.jvm.linux
+                    currentOs.contains("windows") -> libs.secp256k1.kmp.jni.jvm.windows
+                    currentOs.contains("mac") || currentOs.contains("darwin") -> libs.secp256k1.kmp.jni.jvm.macos
+                    else -> error("Unsupported OS: $currentOs")
+                }
+            implementation(targetDep)
         }
     }
 }
@@ -100,12 +121,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
 dependencies {
+    add("kspJvm", libs.androidx.room.compiler)
+    add("kspAndroid", libs.androidx.room.compiler)
+    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
+    add("kspIosX64", libs.androidx.room.compiler)
+    add("kspIosArm64", libs.androidx.room.compiler)
+
     debugImplementation(libs.compose.uiTooling)
 }
 

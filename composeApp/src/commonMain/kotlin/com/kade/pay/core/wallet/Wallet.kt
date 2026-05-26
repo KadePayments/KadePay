@@ -1,7 +1,9 @@
 package com.kade.pay.core.wallet
 
 interface Wallet {
-    fun save()
+    val descriptor: String
+    val mnemonic: String
+    val lastUsedIndex: Int
 
-    fun delete()
+    val onChain: Boolean
 }

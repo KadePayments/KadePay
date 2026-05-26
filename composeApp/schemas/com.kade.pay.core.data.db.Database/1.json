@@ -1,0 +1,49 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "9629527b3e1db242081c96c8a62cb407",
+    "entities": [
+      {
+        "tableName": "wallets",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`descriptor` TEXT NOT NULL, `mnemonic` TEXT NOT NULL, `lastUsedIndex` INTEGER NOT NULL, `onChain` INTEGER NOT NULL, PRIMARY KEY(`descriptor`))",
+        "fields": [
+          {
+            "fieldPath": "descriptor",
+            "columnName": "descriptor",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mnemonic",
+            "columnName": "mnemonic",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastUsedIndex",
+            "columnName": "lastUsedIndex",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "onChain",
+            "columnName": "onChain",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "descriptor"
+          ]
+        }
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9629527b3e1db242081c96c8a62cb407')"
+    ]
+  }
+}

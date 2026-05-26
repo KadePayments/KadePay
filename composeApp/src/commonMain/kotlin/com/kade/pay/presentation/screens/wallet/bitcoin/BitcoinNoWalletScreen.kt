@@ -23,14 +23,14 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun BitcoinNoWalletScreen() {
+fun BitcoinNoWalletScreen(onNew: () -> Unit = {}) {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         FilledTonalButton(
-            onClick = {},
+            onClick = onNew,
         ) {
             Icon(painterResource(Res.drawable.wallet), null)
             Spacer(Modifier.width(8.dp))

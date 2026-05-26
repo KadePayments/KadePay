@@ -1,11 +1,8 @@
 package com.kade.pay.core.wallet.bitcoin
 
-class BitcoinWalletImpl : BitcoinWallet {
-    override fun save() {
-        TODO("Not yet implemented")
-    }
-
-    override fun delete() {
-        TODO("Not yet implemented")
-    }
-}
+class BitcoinWalletImpl(
+    override val descriptor: String,
+    override val mnemonic: String,
+    override val lastUsedIndex: Int,
+    override val onChain: Boolean = true,
+) : BitcoinWallet

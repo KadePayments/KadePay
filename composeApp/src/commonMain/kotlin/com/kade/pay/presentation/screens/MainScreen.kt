@@ -14,6 +14,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -23,10 +24,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.kade.pay.core.data.db.getDatabaseBuilder
+import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinNewWalletScreen
+import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinNoWalletScreen
 import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinWalletScreen
+import com.kade.pay.presentation.screens.wallet.bitcoin.NEW_WALLET
+import com.kade.pay.presentation.screens.wallet.bitcoin.NO_WALLET
+import com.kade.pay.presentation.screens.wallet.bitcoin.WALLET
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.theme.arkadeIconColor
 import com.kade.pay.presentation.theme.bitcoinIconColor
+import com.kade.pay.presentation.viewmodels.WalletViewModel
 import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.app_name
 import kadepay.composeapp.generated.resources.arkade
@@ -44,9 +56,16 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun MainScreen() {
+    val dbBuilder = getDatabaseBuilder()
+    val walletViewModel = viewModel { WalletViewModel(dbBuilder) }
     var selectedNavItem: SelectedNavItem by rememberSaveable {
         mutableStateOf(SelectedNavItem.Bitcoin)
     }
+
+    LaunchedEffect(Unit) {
+        walletViewModel.onLoadWallets()
+    }
+
     Row(
         Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
     ) {
@@ -160,7 +179,33 @@ fun MainScreen() {
         }
         when (selectedNavItem) {
             is SelectedNavItem.Bitcoin -> {
-                BitcoinWalletScreen()
+                val navController = rememberNavController()
+                var initialScreen = NO_WALLET
+                if (walletViewModel.state.onChainWalletAvailable) {
+                    initialScreen = WALLET
+                }
+                NavHost(navController, initialScreen) {
+                    composable(NO_WALLET) {
+                        BitcoinNoWalletScreen(
+                            onNew = {
+                                navController.navigate(NEW_WALLET)
+                            },
+                        )
+                    }
+                    composable(NEW_WALLET) {
+                        BitcoinNewWalletScreen(
+                            onNavigate = {
+                                navController.navigate(WALLET)
+                            },
+                            onBack = {
+                                navController.popBackStack()
+                            },
+                        )
+                    }
+                    composable(WALLET) {
+                        BitcoinWalletScreen()
+                    }
+                }
             }
             is SelectedNavItem.Arkade -> {}
             is SelectedNavItem.Invoices -> {}

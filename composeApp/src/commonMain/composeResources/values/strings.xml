@@ -11,4 +11,7 @@
     <string name="your_keys">Your keys</string>
     <string name="receive">Receive</string>
     <string name="send">Send</string>
+    <string name="finish">Finish</string>
+    <string name="passphrase">Passphrase</string>
+    <string name="mnemonic_warn">Write down all these words in the order presented. This phrase is used to get back your wallet.</string>
 </resources>
