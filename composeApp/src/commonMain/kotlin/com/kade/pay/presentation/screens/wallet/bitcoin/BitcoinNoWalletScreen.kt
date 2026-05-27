@@ -39,6 +39,7 @@ fun BitcoinNoWalletScreen(onNew: () -> Unit = {}) {
         Spacer(Modifier.height(18.dp))
         FilledTonalButton(
             onClick = {},
+            enabled = false,
         ) {
             Icon(painterResource(Res.drawable.wallet), null)
             Spacer(Modifier.width(8.dp))

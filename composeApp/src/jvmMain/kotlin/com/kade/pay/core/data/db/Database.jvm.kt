@@ -7,7 +7,8 @@ import java.io.File
 
 @Composable
 actual fun getDatabaseBuilder(): RoomDatabase.Builder<Database> {
-    val dbFile = File(System.getProperty("java.io.tmpdir"), "kadepay.db")
+    val appDir = File(System.getProperty("user.home"), ".kadepay").also { it.mkdirs() }
+    val dbFile = File(appDir, "kadepay.db")
     return Room.databaseBuilder(
         name = dbFile.absolutePath,
     ) { DatabaseConstructor.initialize() }

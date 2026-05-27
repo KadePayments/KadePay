@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -29,6 +30,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -37,6 +40,7 @@ import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.viewmodels.WalletViewModel
 import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.arrow_back
+import kadepay.composeapp.generated.resources.back
 import kadepay.composeapp.generated.resources.finish
 import kadepay.composeapp.generated.resources.info
 import kadepay.composeapp.generated.resources.mnemonic_warn
@@ -75,6 +79,8 @@ fun BitcoinNewWalletScreen(
                     passphrase = it
                 },
                 label = { Text(stringResource(Res.string.passphrase)) },
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             )
             Spacer(Modifier.height(32.dp))
             if (viewModel.state.mnemonics.isNotEmpty()) {
@@ -208,8 +214,9 @@ fun BitcoinNewWalletScreen(
             Spacer(Modifier.height(64.dp))
             FilledTonalButton(
                 onClick = {
-                    viewModel.onCreateWallet(passphrase, true)
-                    onNavigate()
+                    viewModel.onCreateWallet(passphrase, true) {
+                        onNavigate()
+                    }
                 },
             ) {
                 Icon(painterResource(Res.drawable.wallet), null)
@@ -223,7 +230,7 @@ fun BitcoinNewWalletScreen(
         ) {
             Icon(
                 painterResource(Res.drawable.arrow_back),
-                null,
+                stringResource(Res.string.back),
                 tint = MaterialTheme.colorScheme.onBackground,
             )
         }

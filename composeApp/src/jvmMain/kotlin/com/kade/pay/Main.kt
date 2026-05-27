@@ -31,7 +31,7 @@ fun FrameWindowScope.SetMinimumSize(
     height: Dp,
 ) {
     val density = LocalDensity.current
-    LaunchedEffect(density) {
+    LaunchedEffect(density, width, height) {
         window.minimumSize =
             Dimension(
                 (width.value * density.density).toInt(),

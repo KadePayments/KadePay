@@ -195,7 +195,10 @@ fun MainScreen() {
                     composable(NEW_WALLET) {
                         BitcoinNewWalletScreen(
                             onNavigate = {
-                                navController.navigate(WALLET)
+                                navController.navigate(WALLET) {
+                                    popUpTo(NEW_WALLET) { inclusive = true }
+                                    launchSingleTop = true
+                                }
                             },
                             onBack = {
                                 navController.popBackStack()

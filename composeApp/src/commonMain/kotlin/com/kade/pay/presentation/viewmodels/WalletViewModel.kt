@@ -52,15 +52,22 @@ class WalletViewModel(
     fun onCreateWallet(
         passphrase: String,
         onChain: Boolean,
+        onSuccess: () -> Unit,
     ) {
         viewModelScope.launch {
             if (onChain) {
-                onChainWallet = BitcoinWallet.new(passphrase, state.mnemonics, state.onChainNetwork)
-                onChainWallet?.let { walletRepo.save(it) }
-                state =
-                    state.copy(
-                        onChainWalletAvailable = true,
-                    )
+                if (state.mnemonics.isEmpty()) return@launch
+                runCatching {
+                    BitcoinWallet.new(passphrase, state.mnemonics, state.onChainNetwork)
+                }.onSuccess {
+                    onChainWallet = it
+                    walletRepo.save(it)
+                    state =
+                        state.copy(
+                            onChainWalletAvailable = true,
+                        )
+                    onSuccess()
+                }
                 return@launch
             }
             // Arkade OffChain Wallet
