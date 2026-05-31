@@ -22,6 +22,9 @@ interface BitcoinWallet : Wallet {
             network: Network,
             secureStorage: SecureStorage,
         ): BitcoinWallet {
+            val mnemonicString = mnemonics.joinToString(" ") { it }
+            MnemonicCode.validate(mnemonicString)
+
             val seed = MnemonicCode.toSeed(mnemonics, passphrase)
             val masterKey = DeterministicWallet.generate(seed)
             val keyFingerprint = masterKey.extendedPublicKey.keyFingerprint()
@@ -56,8 +59,6 @@ interface BitcoinWallet : Wallet {
 
             val accountDescriptor = "tr([$keyFingerprint/86'/$coinType'/0']$accountPubKey/0/*)"
 
-            val mnemonicString = mnemonics.joinToString(" ") { it }
-            MnemonicCode.validate(mnemonicString)
             return BitcoinWalletImpl(masterPublicKey, accountDescriptor, 0)
         }
 

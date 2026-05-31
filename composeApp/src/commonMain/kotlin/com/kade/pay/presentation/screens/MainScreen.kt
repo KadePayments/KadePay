@@ -180,11 +180,17 @@ fun MainScreen() {
         when (selectedNavItem) {
             is SelectedNavItem.Bitcoin -> {
                 val navController = rememberNavController()
-                var initialScreen = NO_WALLET
-                if (walletViewModel.state.onChainWalletAvailable) {
-                    initialScreen = WALLET
+                val onChainWalletAvailable = walletViewModel.state.onChainWalletAvailable
+                LaunchedEffect(onChainWalletAvailable) {
+                    if (onChainWalletAvailable) {
+                        navController.navigate(WALLET) {
+                            popUpTo(NO_WALLET) { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    }
                 }
-                NavHost(navController, initialScreen) {
+
+                NavHost(navController, NO_WALLET) {
                     composable(NO_WALLET) {
                         BitcoinNoWalletScreen(
                             onNew = {
