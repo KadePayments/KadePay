@@ -9,6 +9,7 @@ import fr.acinq.bitcoin.DeterministicWallet
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class BitcoinWalletTest : com.kade.pay.Test() {
     @OptIn(ExperimentalTestApi::class)
@@ -21,8 +22,10 @@ class BitcoinWalletTest : com.kade.pay.Test() {
                 BitcoinWallet.new(passphrase, mnemonics, Network.TESTNET, secureStorage)
             val masterPrivateKey = secureStorage.get(wallet.fingerprint())
 
+            assertNotNull(masterPrivateKey)
+
             val masterKey =
-                DeterministicWallet.ExtendedPrivateKey.decode(masterPrivateKey!!).second
+                DeterministicWallet.ExtendedPrivateKey.decode(masterPrivateKey).second
 
             assertEquals(wallet.fingerprint(), masterKey.extendedPublicKey.keyFingerprint())
             assertEquals(wallet.masterPubKey, masterKey.extendedPublicKey.encode(true))

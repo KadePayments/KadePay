@@ -30,7 +30,6 @@ class WalletViewModel(
                 this@WalletViewModel.onChainWallet = onChainWallet
                 state =
                     state.copy(
-                        mnemonics = onChainWallet.mnemonic.split(" "),
                         onChainWalletAvailable = true,
                     )
             }

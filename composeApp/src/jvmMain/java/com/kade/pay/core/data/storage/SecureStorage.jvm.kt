@@ -52,7 +52,4 @@ class SecureStorageImpl(
 }
 
 @Composable
-actual fun getSecureStorage(passphrase: String): SecureStorage {
-    println("passphrase: $passphrase")
-    return SecureStorageImpl(passphrase)
-}
+actual fun getSecureStorage(passphrase: String): SecureStorage = SecureStorageImpl(passphrase)

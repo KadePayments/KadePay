@@ -58,7 +58,7 @@ interface BitcoinWallet : Wallet {
 
             val mnemonicString = mnemonics.joinToString(" ") { it }
             MnemonicCode.validate(mnemonicString)
-            return BitcoinWalletImpl(masterPublicKey, accountDescriptor, mnemonicString, 0)
+            return BitcoinWalletImpl(masterPublicKey, accountDescriptor, 0)
         }
 
         fun import(): BitcoinWallet {
