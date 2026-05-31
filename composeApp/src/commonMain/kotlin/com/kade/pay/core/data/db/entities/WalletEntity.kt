@@ -10,6 +10,7 @@ import com.kade.pay.core.wallet.bitcoin.BitcoinWalletImpl
 )
 data class WalletEntity(
     @PrimaryKey
+    val masterPubKey: String,
     val descriptor: String,
     val mnemonic: String,
     val lastUsedIndex: Int,
@@ -17,13 +18,14 @@ data class WalletEntity(
 ) {
     fun toWallet(): Wallet =
         when (onChain) {
-            true -> BitcoinWalletImpl(descriptor, mnemonic, lastUsedIndex, onChain)
+            true -> BitcoinWalletImpl(masterPubKey, descriptor, mnemonic, lastUsedIndex, onChain)
             else -> TODO()
         }
 
     companion object {
         fun fromWallet(wallet: Wallet): WalletEntity =
             WalletEntity(
+                wallet.masterPubKey,
                 wallet.descriptor,
                 wallet.mnemonic,
                 wallet.lastUsedIndex,

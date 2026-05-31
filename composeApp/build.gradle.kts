@@ -10,7 +10,7 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.ktlintGradle)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.androidx.room)
+    alias(libs.plugins.androidxRoom)
 }
 
 val currentOs: String = System.getProperty("os.name").lowercase()
@@ -51,6 +51,16 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.androidx.room.sqlite.wrapper)
             implementation(libs.secp256k1.kmp.jni.android)
+            implementation(libs.androidx.datastore.preferences)
+            implementation(libs.com.google.crypto.tink)
+
+            implementation(libs.secp256k1.kmp.jni.android)
+        }
+        androidUnitTest.dependencies {
+            implementation(libs.robolectric)
+            implementation(libs.compose.test.junit4)
+            implementation(libs.compose.test.manifest)
+            implementation(libs.secp256k1.kmp.jni.jvm)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -71,6 +81,8 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.test.coroutines)
+            implementation(libs.compose.test)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
@@ -123,6 +135,11 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
+    }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
     }
 }
 

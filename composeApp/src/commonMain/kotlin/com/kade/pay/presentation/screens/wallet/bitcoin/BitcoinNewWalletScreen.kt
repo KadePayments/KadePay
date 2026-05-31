@@ -36,6 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kade.pay.core.data.db.getDatabaseBuilder
+import com.kade.pay.core.data.storage.getSecureStorage
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.viewmodels.WalletViewModel
 import kadepay.composeapp.generated.resources.Res
@@ -62,6 +63,7 @@ fun BitcoinNewWalletScreen(
         viewModel {
             WalletViewModel(dbBuilder)
         }
+    val secureStorage = getSecureStorage(passphrase)
 
     LaunchedEffect(Unit) {
         viewModel.onNewWallet(true)
@@ -214,7 +216,7 @@ fun BitcoinNewWalletScreen(
             Spacer(Modifier.height(64.dp))
             FilledTonalButton(
                 onClick = {
-                    viewModel.onCreateWallet(passphrase, true) {
+                    viewModel.onCreateWallet(passphrase, true, secureStorage) {
                         onNavigate()
                     }
                 },

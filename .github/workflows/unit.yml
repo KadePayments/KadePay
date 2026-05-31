@@ -24,3 +24,6 @@ jobs:
 
       - name: Run linter
         run: ./gradlew lint --no-daemon
+
+      - name: Run tests
+        run: ./gradlew jvmTest testDebugUnitTest testReleaseUnitTest

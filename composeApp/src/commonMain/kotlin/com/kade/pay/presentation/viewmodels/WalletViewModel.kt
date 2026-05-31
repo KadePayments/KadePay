@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.room.RoomDatabase
 import com.kade.pay.core.data.db.Database
 import com.kade.pay.core.data.repos.WalletRepoImpl
+import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.wallet.Wallet
 import com.kade.pay.core.wallet.bitcoin.BitcoinWallet
 import kotlinx.coroutines.launch
@@ -52,13 +53,14 @@ class WalletViewModel(
     fun onCreateWallet(
         passphrase: String,
         onChain: Boolean,
+        secureStorage: SecureStorage,
         onSuccess: () -> Unit,
     ) {
         viewModelScope.launch {
             if (onChain) {
                 if (state.mnemonics.isEmpty()) return@launch
                 runCatching {
-                    BitcoinWallet.new(passphrase, state.mnemonics, state.onChainNetwork)
+                    BitcoinWallet.new(passphrase, state.mnemonics, state.onChainNetwork, secureStorage)
                 }.onSuccess {
                     onChainWallet = it
                     walletRepo.save(it)
