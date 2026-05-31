@@ -62,10 +62,6 @@ fun MainScreen() {
         mutableStateOf(SelectedNavItem.Bitcoin)
     }
 
-    LaunchedEffect(Unit) {
-        walletViewModel.onLoadWallets()
-    }
-
     Row(
         Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
     ) {
@@ -180,6 +176,7 @@ fun MainScreen() {
         when (selectedNavItem) {
             is SelectedNavItem.Bitcoin -> {
                 val navController = rememberNavController()
+                walletViewModel.onLoadWallets()
                 val onChainWalletAvailable = walletViewModel.state.onChainWalletAvailable
                 LaunchedEffect(onChainWalletAvailable) {
                     if (onChainWalletAvailable) {

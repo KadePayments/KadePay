@@ -63,10 +63,7 @@ class WalletViewModel(
                 }.onSuccess {
                     onChainWallet = it
                     walletRepo.save(it)
-                    state =
-                        state.copy(
-                            onChainWalletAvailable = true,
-                        )
+                    state = state.copy(onChainWalletAvailable = true)
                     onSuccess()
                 }
                 return@launch
