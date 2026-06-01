@@ -18,12 +18,14 @@ if [ "$STASH_COUNT_AFTER" -gt "$STASH_COUNT_BEFORE" ]; then
   trap "git stash pop --quiet" EXIT
 fi
 
-# Run unit tests before any commit
+printf "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n✓ Code style is good\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
 
-#status=$?
-#if [ "$status" = 0 ]; then
-  printf "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n✓ Code style is good\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-#else
-# printf "❌ Some unit tests are failing!\n"
-# exit 1
-#fi
+./gradlew jvmTest testDebugUnitTest testReleaseUnitTest
+
+status=$?
+if [ "$status" = 0 ]; then
+  printf "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n✓ All unit tests passed\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+else
+  printf "❌ Some unit tests are failing!\n"
+  exit 1
+fi

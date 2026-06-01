@@ -6,4 +6,15 @@
     <string name="payments">Payments</string>
     <string name="invoices">Invoices</string>
     <string name="paybutton">Pay Button</string>
+    <string name="new">New</string>
+    <string name="import">Import</string>
+    <string name="your_keys">Your keys</string>
+    <string name="receive">Receive</string>
+    <string name="send">Send</string>
+    <string name="finish">Finish</string>
+    <string name="passphrase">Passphrase</string>
+    <string name="mnemonic_warn">Write down all these words in the exact order presented. This phrase is your only way to restore your wallet. Never share it or store it digitally—anyone with these words can access your funds.</string>
+    <string name="back">Back</string>
+    <string name="hide">Hide</string>
+    <string name="show">Shows</string>
 </resources>
