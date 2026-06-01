@@ -2,8 +2,8 @@
  KadePay
 </h1>
 <p align="center">
-<a href="https://github.com/shubertm/KadePay/actions/workflows/ci.yml">
-<img src="https://github.com/shubertm/KadePay/actions/workflows/ci.yml/badge.svg" alt="CI status">
+<a href="https://github.com/KadePayments/KadePay/actions/workflows/ci.yml">
+<img src="https://github.com/KadePayments/KadePay/actions/workflows/ci.yml/badge.svg" alt="CI status">
 </a>
 </p>
 
@@ -15,10 +15,10 @@
 
 ## Architecture
 
-| Modules  | Description |
-|----------|-------------|
+| Modules    | Description               |
+|------------|---------------------------|
 | composeApp | Compose Multiplatform App |
-| iosApp | iOS App |
+| iosApp     | iOS App                   |
 
 <p align="center">
 <img src="./assets/architecture.png" alt="architecture">
@@ -35,7 +35,7 @@
 ### Installation
 Clone the repository:
 ```bash
-git clone https://github.com/shubertm/KadePay.git
+git clone https://github.com/KadePayments/KadePay.git
 cd KadePay
 ```
 
@@ -58,6 +58,12 @@ Please note that this project is **experimental**, so expect frequent changes.
 #### Setup Pre-commit Hook
 ```shell
 cp scripts/pre-commit .git/hooks/
+```
+
+### Testing
+#### Unit Tests
+```shell
+./gradlew unitTest
 ```
 
 ---

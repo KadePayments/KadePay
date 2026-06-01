@@ -20,7 +20,7 @@ fi
 
 printf "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n✓ Code style is good\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
 
-./gradlew jvmTest testDebugUnitTest testReleaseUnitTest
+./gradlew unitTest
 
 status=$?
 if [ "$status" = 0 ]; then

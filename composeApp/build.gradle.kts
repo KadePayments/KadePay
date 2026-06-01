@@ -169,3 +169,18 @@ compose.desktop {
         }
     }
 }
+
+tasks.register("unitTest") {
+    val jvmTest = tasks.getByName("jvmTest")
+    jvmTest.doFirst {
+        logger.quiet("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        logger.quiet("⏳ Running unit tests")
+        logger.quiet("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+    }
+    dependsOn(jvmTest, "testDebugUnitTest", "testReleaseUnitTest")
+    doLast {
+        logger.quiet("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        logger.quiet("✓ All unit tests passed")
+        logger.quiet("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+    }
+}
