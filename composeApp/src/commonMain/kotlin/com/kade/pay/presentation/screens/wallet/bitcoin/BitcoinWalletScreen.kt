@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kade.pay.presentation.theme.KadePayTheme
+import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.arrow_outward
 import kadepay.composeapp.generated.resources.hide
@@ -44,12 +45,12 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun BitcoinWalletScreen() {
+fun BitcoinWalletScreen(walletState: WalletState) {
     var showBalance by rememberSaveable { mutableStateOf(false) }
-    val balance = "₿123.67"
+    val unit = "₿"
     val hiddenBalance =
-        remember(balance) {
-            PasswordVisualTransformation().filter(AnnotatedString(balance))
+        remember(walletState.balance) {
+            PasswordVisualTransformation().filter(AnnotatedString("$unit${walletState.balance}"))
         }
     Box(contentAlignment = Alignment.Center) {
         Column(
@@ -57,7 +58,7 @@ fun BitcoinWalletScreen() {
         ) {
             Row(Modifier.padding(start = 64.dp, top = 128.dp)) {
                 Text(
-                    if (showBalance) balance else hiddenBalance.text.text,
+                    if (showBalance) "$unit${walletState.balance}" else hiddenBalance.text.text,
                     color = MaterialTheme.colorScheme.onBackground,
                     style =
                         MaterialTheme.typography.headlineLarge
@@ -120,6 +121,6 @@ fun BitcoinWalletScreen() {
 @Composable
 fun BitcoinWalletScreenPreview() {
     KadePayTheme {
-        BitcoinWalletScreen()
+        BitcoinWalletScreen(WalletState())
     }
 }

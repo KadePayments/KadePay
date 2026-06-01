@@ -63,8 +63,10 @@ class WalletViewModel(
                 }.onSuccess {
                     onChainWallet = it
                     walletRepo.save(it)
-                    state = state.copy(onChainWalletAvailable = true)
+                    state = state.copy(onChainWalletAvailable = true, mnemonics = emptyList())
                     onSuccess()
+                }.onFailure {
+                    state = state.copy(errorMessage = "Failed to create wallet")
                 }
                 return@launch
             }

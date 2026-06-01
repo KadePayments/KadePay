@@ -34,11 +34,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.kade.pay.core.data.db.getDatabaseBuilder
+import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.data.storage.getSecureStorage
 import com.kade.pay.presentation.theme.KadePayTheme
-import com.kade.pay.presentation.viewmodels.WalletViewModel
+import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.arrow_back
 import kadepay.composeapp.generated.resources.back
@@ -52,21 +51,18 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun BitcoinNewWalletScreen(
-    onNavigate: () -> Unit = {},
+    walletState: WalletState,
+    onLaunch: () -> Unit = {},
+    onFinish: (passphrase: String, secureStorage: SecureStorage) -> Unit = { _, _ -> },
     onBack: () -> Unit = {},
 ) {
     var passphrase by rememberSaveable {
         mutableStateOf("")
     }
-    val dbBuilder = getDatabaseBuilder()
-    val viewModel: WalletViewModel =
-        viewModel {
-            WalletViewModel(dbBuilder)
-        }
     val secureStorage = getSecureStorage(passphrase)
 
     LaunchedEffect(Unit) {
-        viewModel.onNewWallet(true)
+        onLaunch()
     }
 
     Box {
@@ -85,21 +81,21 @@ fun BitcoinNewWalletScreen(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             )
             Spacer(Modifier.height(32.dp))
-            if (viewModel.state.mnemonics.isNotEmpty()) {
+            if (walletState.mnemonics.isNotEmpty()) {
                 Column(
                     Modifier.padding(start = 24.dp, end = 24.dp),
                 ) {
-                    val firstRow = viewModel.state.mnemonics.take(6)
+                    val firstRow = walletState.mnemonics.take(6)
                     val secondRow =
-                        viewModel.state.mnemonics
+                        walletState.mnemonics
                             .drop(6)
                             .take(6)
                     val thirdRow =
-                        viewModel.state.mnemonics
+                        walletState.mnemonics
                             .drop(12)
                             .take(6)
                     val fourthRow =
-                        viewModel.state.mnemonics
+                        walletState.mnemonics
                             .drop(18)
                             .take(6)
                     LazyRow(
@@ -216,9 +212,7 @@ fun BitcoinNewWalletScreen(
             Spacer(Modifier.height(64.dp))
             FilledTonalButton(
                 onClick = {
-                    viewModel.onCreateWallet(passphrase, true, secureStorage) {
-                        onNavigate()
-                    }
+                    onFinish(passphrase, secureStorage)
                 },
             ) {
                 Icon(painterResource(Res.drawable.wallet), null)
@@ -243,6 +237,6 @@ fun BitcoinNewWalletScreen(
 @Composable
 fun BitcoinNewWalletScreenPreview() {
     KadePayTheme {
-        BitcoinNewWalletScreen()
+        BitcoinNewWalletScreen(WalletState())
     }
 }

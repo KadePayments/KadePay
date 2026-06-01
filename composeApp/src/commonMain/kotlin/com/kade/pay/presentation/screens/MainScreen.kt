@@ -17,7 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,7 +59,7 @@ import org.jetbrains.compose.resources.stringResource
 fun MainScreen() {
     val dbBuilder = getDatabaseBuilder()
     val walletViewModel = viewModel { WalletViewModel(dbBuilder) }
-    var selectedNavItem: SelectedNavItem by remember {
+    var selectedNavItem: SelectedNavItem by rememberSaveable(stateSaver = navItemStateSaver) {
         mutableStateOf(SelectedNavItem.Bitcoin)
     }
 
@@ -176,7 +177,9 @@ fun MainScreen() {
         when (selectedNavItem) {
             is SelectedNavItem.Bitcoin -> {
                 val navController = rememberNavController()
-                walletViewModel.onLoadWallets()
+                LaunchedEffect(Unit) {
+                    walletViewModel.onLoadWallets()
+                }
                 val onChainWalletAvailable = walletViewModel.state.onChainWalletAvailable
                 LaunchedEffect(onChainWalletAvailable) {
                     if (onChainWalletAvailable) {
@@ -191,16 +194,28 @@ fun MainScreen() {
                     composable(NO_WALLET) {
                         BitcoinNoWalletScreen(
                             onNew = {
-                                navController.navigate(NEW_WALLET)
+                                navController.navigate(NEW_WALLET) {
+                                    launchSingleTop = true
+                                }
                             },
                         )
                     }
                     composable(NEW_WALLET) {
                         BitcoinNewWalletScreen(
-                            onNavigate = {
-                                navController.navigate(WALLET) {
-                                    popUpTo(NEW_WALLET) { inclusive = true }
-                                    launchSingleTop = true
+                            walletViewModel.state,
+                            onLaunch = {
+                                walletViewModel.onNewWallet(true)
+                            },
+                            onFinish = { passphrase, secureStorage ->
+                                walletViewModel.onCreateWallet(
+                                    passphrase,
+                                    true,
+                                    secureStorage,
+                                ) {
+                                    navController.navigate(WALLET) {
+                                        popUpTo(NEW_WALLET) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
                                 }
                             },
                             onBack = {
@@ -209,7 +224,7 @@ fun MainScreen() {
                         )
                     }
                     composable(WALLET) {
-                        BitcoinWalletScreen()
+                        BitcoinWalletScreen(walletViewModel.state)
                     }
                 }
             }
@@ -229,6 +244,27 @@ sealed class SelectedNavItem {
 
     object PayButton : SelectedNavItem()
 }
+
+private val navItemStateSaver =
+    Saver<SelectedNavItem, Int>(
+        {
+            when (it) {
+                SelectedNavItem.Bitcoin -> 0
+                SelectedNavItem.Arkade -> 1
+                SelectedNavItem.Invoices -> 2
+                SelectedNavItem.PayButton -> 3
+            }
+        },
+        {
+            when (it) {
+                0 -> SelectedNavItem.Bitcoin
+                1 -> SelectedNavItem.Arkade
+                2 -> SelectedNavItem.Invoices
+                3 -> SelectedNavItem.PayButton
+                else -> throw IllegalArgumentException("Invalid index")
+            }
+        },
+    )
 
 @Preview
 @Composable

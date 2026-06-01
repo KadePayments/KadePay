@@ -9,7 +9,7 @@ import com.kade.pay.core.wallet.Wallet
 class WalletRepoImpl(
     dbBuilder: RoomDatabase.Builder<Database>,
 ) : WalletRepo {
-    val storage = WalletStorageImpl(dbBuilder)
+    private val storage = WalletStorageImpl(dbBuilder)
 
     override suspend fun save(wallet: Wallet) {
         storage.save(WalletEntity.fromWallet(wallet))

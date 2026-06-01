@@ -53,8 +53,6 @@ kotlin {
             implementation(libs.secp256k1.kmp.jni.android)
             implementation(libs.androidx.datastore.preferences)
             implementation(libs.com.google.crypto.tink)
-
-            implementation(libs.secp256k1.kmp.jni.android)
         }
         androidUnitTest.dependencies {
             implementation(libs.robolectric)
@@ -129,7 +127,7 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
         }
     }
     compileOptions {

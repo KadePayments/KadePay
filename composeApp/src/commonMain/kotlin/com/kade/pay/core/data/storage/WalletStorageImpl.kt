@@ -8,8 +8,8 @@ import com.kade.pay.core.data.db.getDatabase
 class WalletStorageImpl(
     dbBuilder: RoomDatabase.Builder<Database>,
 ) : WalletStorage {
-    val db = dbBuilder.getDatabase()
-    val walletDao = db.walletDao()
+    private val db = dbBuilder.getDatabase()
+    private val walletDao = db.walletDao()
 
     override suspend fun save(wallet: WalletEntity) = walletDao.save(wallet)
 
