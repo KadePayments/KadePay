@@ -170,14 +170,27 @@ compose.desktop {
     }
 }
 
+project.afterEvaluate {
+    val jvmTest = tasks.getByName("jvmTest")
+    val androidDebugTest = tasks.getByName("testDebugUnitTest")
+    val androidReleaseTest = tasks.getByName("testReleaseUnitTest")
+    androidDebugTest.mustRunAfter(jvmTest)
+    androidReleaseTest.mustRunAfter(jvmTest)
+}
+
 tasks.register("unitTest") {
     val jvmTest = tasks.getByName("jvmTest")
+    val androidDebugTest = tasks.getByName("testDebugUnitTest")
+    val androidReleaseTest = tasks.getByName("testReleaseUnitTest")
+
     jvmTest.doFirst {
         logger.quiet("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         logger.quiet("⏳ Running unit tests")
         logger.quiet("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
     }
-    dependsOn(jvmTest, "testDebugUnitTest", "testReleaseUnitTest")
+
+    dependsOn(jvmTest, androidDebugTest, androidReleaseTest)
+
     doLast {
         logger.quiet("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
         logger.quiet("✓ All unit tests passed")

@@ -121,7 +121,7 @@ jobs:
           path: ./composeApp/build/compose/binaries/main/msi/*.msi
           if-no-files-found: error
 
-      - name: Upload MSI
+      - name: Upload EXE
         uses: actions/upload-artifact@v7
         with:
           name: KadePay-Windows-EXE
