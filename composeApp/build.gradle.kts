@@ -171,17 +171,18 @@ compose.desktop {
 }
 
 project.afterEvaluate {
-    val jvmTest = tasks.getByName("jvmTest")
-    val androidDebugTest = tasks.getByName("testDebugUnitTest")
-    val androidReleaseTest = tasks.getByName("testReleaseUnitTest")
+    val jvmTest = tasks.named("jvmTest").get()
+    val androidDebugTest = tasks.named("testDebugUnitTest").get()
+    val androidReleaseTest = tasks.named("testReleaseUnitTest").get()
+
     androidDebugTest.mustRunAfter(jvmTest)
     androidReleaseTest.mustRunAfter(jvmTest)
 }
 
 tasks.register("unitTest") {
-    val jvmTest = tasks.getByName("jvmTest")
-    val androidDebugTest = tasks.getByName("testDebugUnitTest")
-    val androidReleaseTest = tasks.getByName("testReleaseUnitTest")
+    val jvmTest = tasks.named("jvmTest").get()
+    val androidDebugTest = tasks.named("testDebugUnitTest").get()
+    val androidReleaseTest = tasks.named("testReleaseUnitTest").get()
 
     jvmTest.doFirst {
         logger.quiet("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
