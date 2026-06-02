@@ -20,12 +20,10 @@ fi
 
 printf "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n✓ Code style is good\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
 
-./gradlew jvmTest testDebugUnitTest testReleaseUnitTest
+./gradlew unitTest
 
 status=$?
-if [ "$status" = 0 ]; then
-  printf "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n✓ All unit tests passed\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
-else
-  printf "❌ Some unit tests are failing!\n"
+if [ "$status" != 0 ]; then
+  printf "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n❌ Some unit tests are failing!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
   exit 1
 fi

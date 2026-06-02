@@ -169,3 +169,32 @@ compose.desktop {
         }
     }
 }
+
+project.afterEvaluate {
+    val jvmTest = tasks.named("jvmTest").get()
+    val androidDebugTest = tasks.named("testDebugUnitTest").get()
+    val androidReleaseTest = tasks.named("testReleaseUnitTest").get()
+
+    androidDebugTest.mustRunAfter(jvmTest)
+    androidReleaseTest.mustRunAfter(jvmTest)
+}
+
+tasks.register("unitTest") {
+    val jvmTest = tasks.named("jvmTest").get()
+    val androidDebugTest = tasks.named("testDebugUnitTest").get()
+    val androidReleaseTest = tasks.named("testReleaseUnitTest").get()
+
+    jvmTest.doFirst {
+        logger.quiet("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        logger.quiet("⏳ Running unit tests")
+        logger.quiet("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+    }
+
+    dependsOn(jvmTest, androidDebugTest, androidReleaseTest)
+
+    doLast {
+        logger.quiet("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+        logger.quiet("✓ All unit tests passed")
+        logger.quiet("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n")
+    }
+}
