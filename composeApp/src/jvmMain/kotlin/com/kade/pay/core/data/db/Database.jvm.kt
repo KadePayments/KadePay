@@ -9,6 +9,9 @@ import java.io.File
 actual fun getDatabaseBuilder(): RoomDatabase.Builder<Database> {
     val appDir =
         File(System.getProperty("user.home"), ".kadepay").also {
+            if (it.exists() && !it.isDirectory) {
+                throw IllegalArgumentException("App path exists but is not a directory: ${it.absolutePath}")
+            }
             if (!it.exists() && !it.mkdirs()) {
                 throw IllegalArgumentException("Failed to create app directory: ${it.absolutePath}")
             }
