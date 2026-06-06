@@ -1,6 +1,5 @@
 package com.kade.pay
 
-import androidx.compose.ui.test.ExperimentalTestApi
 import com.kade.pay.core.wallet.Network
 import com.kade.pay.core.wallet.bitcoin.BitcoinWallet
 import com.kade.pay.core.wallet.bitcoin.BitcoinWallet.Companion.generateMnemonics
@@ -12,7 +11,6 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class BitcoinWalletTest : com.kade.pay.Test() {
-    @OptIn(ExperimentalTestApi::class)
     @Test
     fun `should create bitcoin wallet successfully`() {
         runTest {

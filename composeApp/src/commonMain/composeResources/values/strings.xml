@@ -17,4 +17,6 @@
     <string name="back">Back</string>
     <string name="hide">Hide</string>
     <string name="show">Shows</string>
+    <string name="confirm_mnemonic_code">Confirm your mnemonic code</string>
+    <string name="continue_to_confirm">Continue</string>
 </resources>

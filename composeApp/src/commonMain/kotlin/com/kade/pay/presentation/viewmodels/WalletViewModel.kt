@@ -50,20 +50,22 @@ class WalletViewModel(
     }
 
     fun onCreateWallet(
-        passphrase: String,
         onChain: Boolean,
-        secureStorage: SecureStorage,
+        secureStorage: SecureStorage?,
         onSuccess: () -> Unit,
     ) {
+        if (secureStorage == null || state.passphrase == null || state.mnemonics.isEmpty()) {
+            state = state.copy(errorMessage = "Failed to create wallet")
+            return
+        }
         viewModelScope.launch {
             if (onChain) {
-                if (state.mnemonics.isEmpty()) return@launch
                 runCatching {
-                    BitcoinWallet.new(passphrase, state.mnemonics, state.onChainNetwork, secureStorage)
+                    BitcoinWallet.new(state.passphrase!!, state.mnemonics, state.onChainNetwork, secureStorage)
                 }.onSuccess {
                     onChainWallet = it
                     walletRepo.save(it)
-                    state = state.copy(onChainWalletAvailable = true, mnemonics = emptyList())
+                    state = state.copy(passphrase = null, onChainWalletAvailable = true, mnemonics = emptyList())
                     onSuccess()
                 }.onFailure {
                     state = state.copy(errorMessage = "Failed to create wallet")
@@ -72,6 +74,10 @@ class WalletViewModel(
             }
             // Arkade OffChain Wallet
         }
+    }
+
+    fun updatePassphrase(value: String) {
+        state = state.copy(passphrase = value)
     }
 
     fun onDeleteWallet() {
