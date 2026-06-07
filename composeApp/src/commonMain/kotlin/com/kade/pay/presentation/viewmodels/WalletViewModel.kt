@@ -54,14 +54,16 @@ class WalletViewModel(
         secureStorage: SecureStorage?,
         onSuccess: () -> Unit,
     ) {
-        if (secureStorage == null || state.passphrase == null || state.mnemonics.isEmpty()) {
+        val passphrase = state.passphrase
+        val mnemonics = state.mnemonics
+        if (secureStorage == null || passphrase == null || mnemonics.isEmpty()) {
             state = state.copy(errorMessage = "Failed to create wallet")
             return
         }
         viewModelScope.launch {
             if (onChain) {
                 runCatching {
-                    BitcoinWallet.new(state.passphrase!!, state.mnemonics, state.onChainNetwork, secureStorage)
+                    BitcoinWallet.new(passphrase, mnemonics, state.onChainNetwork, secureStorage)
                 }.onSuccess {
                     onChainWallet = it
                     walletRepo.save(it)

@@ -60,6 +60,11 @@ fun MnemonicConfirmScreen(
             .drop(18)
             .take(6)
 
+    val shuffledFirstRow = rememberSaveable(firstRow) { firstRow.shuffled() }
+    val shuffledSecondRow = rememberSaveable(firstRow) { secondRow.shuffled() }
+    val shuffledThirdRow = rememberSaveable(firstRow) { thirdRow.shuffled() }
+    val shuffledFourthRow = rememberSaveable(firstRow) { fourthRow.shuffled() }
+
     var reorderedFirstRow by rememberSaveable { mutableStateOf(listOf<String>()) }
     var reorderedSecondRow by rememberSaveable { mutableStateOf(listOf<String>()) }
     var reorderedThirdRow by rememberSaveable { mutableStateOf(listOf<String>()) }
@@ -89,19 +94,19 @@ fun MnemonicConfirmScreen(
                 Column(
                     Modifier.padding(start = 24.dp, end = 24.dp),
                 ) {
-                    MnemonicsReorderRow(1, firstRow.shuffled()) {
+                    MnemonicsReorderRow(1, shuffledFirstRow) {
                         reorderedFirstRow = it
                         checkMnemonics()
                     }
-                    MnemonicsReorderRow(2, secondRow.shuffled()) {
+                    MnemonicsReorderRow(2, shuffledSecondRow) {
                         reorderedSecondRow = it
                         checkMnemonics()
                     }
-                    MnemonicsReorderRow(3, thirdRow.shuffled()) {
+                    MnemonicsReorderRow(3, shuffledThirdRow) {
                         reorderedThirdRow = it
                         checkMnemonics()
                     }
-                    MnemonicsReorderRow(4, fourthRow.shuffled()) {
+                    MnemonicsReorderRow(4, shuffledFourthRow) {
                         reorderedFourthRow = it
                         checkMnemonics()
                     }

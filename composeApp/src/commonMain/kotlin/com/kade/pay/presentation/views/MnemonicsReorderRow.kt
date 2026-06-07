@@ -82,6 +82,7 @@ fun MnemonicsReorderRow(
                             onDragCancel = {
                                 draggedIndex = null
                                 dragAccumulatedOffset = 0f
+                                onReorder(chipsList.toList())
                             },
                             onDrag = { change, dragAmount ->
                                 change.consume()
@@ -138,7 +139,7 @@ fun MnemonicsReorderRow(
                     },
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            itemsIndexed(chipsList, key = { _, text -> text }) { index, chipText ->
+            itemsIndexed(chipsList) { index, chipText ->
                 val isCurrentDragging = index == draggedIndex
 
                 MnemonicWord(chipText, isCurrentDragging, dragAccumulatedOffset.roundToInt())
