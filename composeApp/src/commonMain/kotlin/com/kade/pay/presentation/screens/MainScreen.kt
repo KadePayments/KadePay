@@ -30,9 +30,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.kade.pay.core.data.db.getDatabaseBuilder
+import com.kade.pay.presentation.screens.wallet.MnemonicConfirmScreen
 import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinNewWalletScreen
 import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinNoWalletScreen
 import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinWalletScreen
+import com.kade.pay.presentation.screens.wallet.bitcoin.MNEMONIC_CONFIRM
 import com.kade.pay.presentation.screens.wallet.bitcoin.NEW_WALLET
 import com.kade.pay.presentation.screens.wallet.bitcoin.NO_WALLET
 import com.kade.pay.presentation.screens.wallet.bitcoin.WALLET
@@ -206,21 +208,33 @@ fun MainScreen() {
                             onLaunch = {
                                 walletViewModel.onNewWallet(true)
                             },
-                            onFinish = { passphrase, secureStorage ->
-                                walletViewModel.onCreateWallet(
-                                    passphrase,
-                                    true,
-                                    secureStorage,
-                                ) {
-                                    navController.navigate(WALLET) {
-                                        popUpTo(NEW_WALLET) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
+                            onContinue = { passphrase ->
+                                walletViewModel.updatePassphrase(passphrase)
+                                navController.navigate(MNEMONIC_CONFIRM) {
+                                    popUpTo(NEW_WALLET)
+                                    launchSingleTop = true
                                 }
                             },
                             onBack = {
                                 navController.popBackStack()
                             },
+                        )
+                    }
+                    composable(MNEMONIC_CONFIRM) {
+                        MnemonicConfirmScreen(
+                            walletViewModel.state,
+                            onFinish = { secureStorage ->
+                                walletViewModel.onCreateWallet(
+                                    true,
+                                    secureStorage,
+                                ) {
+                                    navController.navigate(WALLET) {
+                                        popUpTo(MNEMONIC_CONFIRM) { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                }
+                            },
+                            onBack = { navController.popBackStack() },
                         )
                     }
                     composable(WALLET) {

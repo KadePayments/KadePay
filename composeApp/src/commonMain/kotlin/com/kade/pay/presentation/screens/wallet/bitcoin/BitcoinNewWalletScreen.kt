@@ -34,14 +34,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.kade.pay.core.data.storage.SecureStorage
-import com.kade.pay.core.data.storage.getSecureStorage
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.arrow_back
 import kadepay.composeapp.generated.resources.back
-import kadepay.composeapp.generated.resources.finish
+import kadepay.composeapp.generated.resources.continue_to_confirm
 import kadepay.composeapp.generated.resources.info
 import kadepay.composeapp.generated.resources.mnemonic_warn
 import kadepay.composeapp.generated.resources.passphrase
@@ -53,13 +51,12 @@ import org.jetbrains.compose.resources.stringResource
 fun BitcoinNewWalletScreen(
     walletState: WalletState,
     onLaunch: () -> Unit = {},
-    onFinish: (passphrase: String, secureStorage: SecureStorage) -> Unit = { _, _ -> },
+    onContinue: (String) -> Unit = {},
     onBack: () -> Unit = {},
 ) {
     var passphrase by rememberSaveable {
         mutableStateOf("")
     }
-    val secureStorage = getSecureStorage(passphrase)
 
     LaunchedEffect(Unit) {
         onLaunch()
@@ -212,12 +209,12 @@ fun BitcoinNewWalletScreen(
             Spacer(Modifier.height(64.dp))
             FilledTonalButton(
                 onClick = {
-                    onFinish(passphrase, secureStorage)
+                    onContinue(passphrase)
                 },
             ) {
                 Icon(painterResource(Res.drawable.wallet), null)
                 Spacer(Modifier.width(8.dp))
-                Text(stringResource(Res.string.finish))
+                Text(stringResource(Res.string.continue_to_confirm))
             }
         }
         IconButton(
