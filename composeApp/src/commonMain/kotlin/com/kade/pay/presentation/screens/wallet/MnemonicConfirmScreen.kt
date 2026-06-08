@@ -61,9 +61,9 @@ fun MnemonicConfirmScreen(
             .take(6)
 
     val shuffledFirstRow = rememberSaveable(firstRow) { firstRow.shuffled() }
-    val shuffledSecondRow = rememberSaveable(firstRow) { secondRow.shuffled() }
-    val shuffledThirdRow = rememberSaveable(firstRow) { thirdRow.shuffled() }
-    val shuffledFourthRow = rememberSaveable(firstRow) { fourthRow.shuffled() }
+    val shuffledSecondRow = rememberSaveable(secondRow) { secondRow.shuffled() }
+    val shuffledThirdRow = rememberSaveable(thirdRow) { thirdRow.shuffled() }
+    val shuffledFourthRow = rememberSaveable(fourthRow) { fourthRow.shuffled() }
 
     var reorderedFirstRow by rememberSaveable { mutableStateOf(listOf<String>()) }
     var reorderedSecondRow by rememberSaveable { mutableStateOf(listOf<String>()) }
