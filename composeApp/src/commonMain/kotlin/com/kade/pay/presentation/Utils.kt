@@ -10,7 +10,11 @@ val listSaver =
             it.joinToString()
         },
         restore = {
-            it.split(",").toMutableList()
+            if (it.isEmpty()) {
+                mutableListOf<String>()
+            } else {
+                it.split(", ").toMutableList()
+            }
         },
     )
 
@@ -23,11 +27,15 @@ val mapSaver =
                 }.joinToString()
         },
         restore = {
-            it
-                .split(",")
-                .associate { entry ->
-                    val (key, value) = entry.split(":")
-                    key.toInt() to value.toBoolean()
-                }.toMutableMap()
+            if (it.isEmpty()) {
+                mutableMapOf<Int, Boolean>()
+            } else {
+                it
+                    .split(", ")
+                    .associate { entry ->
+                        val (key, value) = entry.split(":", limit = 2)
+                        key.trim().toInt() to value.trim().toBoolean()
+                    }.toMutableMap()
+            }
         },
     )
