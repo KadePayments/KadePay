@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -20,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.data.storage.getSecureStorage
+import com.kade.pay.presentation.mapSaver
 import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.confirm_mnemonic_code
@@ -36,7 +36,9 @@ fun MnemonicsReorderView(
 ) {
     val secureStorage = walletState.passphrase?.let { getSecureStorage(walletState.passphrase) }
     var isMnemonicsCorrect by rememberSaveable { mutableStateOf(false) }
-    val reorderedMnemonics = remember { mutableStateListOf<String>() }
+    val correctRowMnemonicsFlags by rememberSaveable(stateSaver = mapSaver) {
+        mutableStateOf(mutableMapOf())
+    }
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -51,6 +53,9 @@ fun MnemonicsReorderView(
         }
         items(rows) { row ->
             val mnemonics = walletState.mnemonics
+            require(mnemonics.size % rows == 0) {
+                "Mnemonics size: ${mnemonics.size} must be divisible by rows: $rows"
+            }
             val wordsPerRow = mnemonics.size / rows
             val start = row * wordsPerRow
             val end = start + wordsPerRow
@@ -60,14 +65,8 @@ fun MnemonicsReorderView(
             var reorderedRowMnemonics by remember { mutableStateOf(listOf<String>()) }
 
             fun checkMnemonics() {
-                if (reorderedRowMnemonics == rowMnemonics && !reorderedMnemonics.containsAll(reorderedRowMnemonics)) {
-                    reorderedMnemonics.addAll(reorderedRowMnemonics)
-                }
-                if (reorderedRowMnemonics != rowMnemonics) {
-                    isMnemonicsCorrect = false
-                    return
-                }
-                isMnemonicsCorrect = reorderedMnemonics.toList() == mnemonics
+                correctRowMnemonicsFlags[row] = reorderedRowMnemonics == rowMnemonics
+                isMnemonicsCorrect = correctRowMnemonicsFlags.size == rows && correctRowMnemonicsFlags.all { it.value }
             }
 
             MnemonicsReorderRow(row + 1, shuffledRowMnemonics) {
