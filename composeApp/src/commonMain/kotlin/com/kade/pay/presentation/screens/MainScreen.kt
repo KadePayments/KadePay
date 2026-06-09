@@ -2,6 +2,7 @@ package com.kade.pay.presentation.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -64,187 +66,264 @@ fun MainScreen() {
     var selectedNavItem: SelectedNavItem by rememberSaveable(stateSaver = navItemStateSaver) {
         mutableStateOf(SelectedNavItem.Bitcoin)
     }
+    val containerWidth = LocalWindowInfo.current.containerDpSize.width
 
-    Row(
-        Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
-    ) {
-        NavigationRail(
-            containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            header = {
-                Row(
-                    Modifier.padding(
-                        top = 48.dp,
-                        start = 24.dp,
-                        end = 24.dp,
-                    ),
-                    verticalAlignment = Alignment.Bottom,
-                ) {
-                    Icon(
-                        painterResource(Res.drawable.kade),
-                        null,
-                        Modifier.padding(bottom = 5.dp),
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
+    if (containerWidth < 600.dp) {
+        Box {
+            when (selectedNavItem) {
+                is SelectedNavItem.Bitcoin -> {
+                    val navController = rememberNavController()
+                    LaunchedEffect(Unit) {
+                        walletViewModel.onLoadWallets()
+                    }
+                    val onChainWalletAvailable = walletViewModel.state.onChainWalletAvailable
+                    LaunchedEffect(onChainWalletAvailable) {
+                        if (onChainWalletAvailable) {
+                            navController.navigate(WALLET) {
+                                popUpTo(NO_WALLET) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
 
+                    NavHost(navController, NO_WALLET) {
+                        composable(NO_WALLET) {
+                            BitcoinNoWalletScreen(
+                                onNew = {
+                                    navController.navigate(NEW_WALLET) {
+                                        launchSingleTop = true
+                                    }
+                                },
+                            )
+                        }
+                        composable(NEW_WALLET) {
+                            BitcoinNewWalletScreen(
+                                walletViewModel.state,
+                                onLaunch = {
+                                    walletViewModel.onNewWallet(true)
+                                },
+                                onContinue = { passphrase ->
+                                    walletViewModel.updatePassphrase(passphrase)
+                                    navController.navigate(MNEMONIC_CONFIRM) {
+                                        popUpTo(NEW_WALLET)
+                                        launchSingleTop = true
+                                    }
+                                },
+                                onBack = {
+                                    navController.popBackStack()
+                                },
+                            )
+                        }
+                        composable(MNEMONIC_CONFIRM) {
+                            MnemonicConfirmScreen(
+                                walletViewModel.state,
+                                onFinish = { secureStorage ->
+                                    walletViewModel.onCreateWallet(
+                                        true,
+                                        secureStorage,
+                                    ) {
+                                        navController.navigate(WALLET) {
+                                            popUpTo(MNEMONIC_CONFIRM) { inclusive = true }
+                                            launchSingleTop = true
+                                        }
+                                    }
+                                },
+                                onBack = { navController.popBackStack() },
+                            )
+                        }
+                        composable(WALLET) {
+                            BitcoinWalletScreen(walletViewModel.state)
+                        }
+                    }
+                }
+                is SelectedNavItem.Arkade -> {}
+                is SelectedNavItem.Invoices -> {}
+                is SelectedNavItem.PayButton -> {}
+            }
+        }
+    } else {
+        Row(
+            Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
+        ) {
+            NavigationRail(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                header = {
+                    Row(
+                        Modifier.padding(
+                            top = 48.dp,
+                            start = 24.dp,
+                            end = 24.dp,
+                        ),
+                        verticalAlignment = Alignment.Bottom,
+                    ) {
+                        Icon(
+                            painterResource(Res.drawable.kade),
+                            null,
+                            Modifier.padding(bottom = 5.dp),
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+
+                        Text(
+                            stringResource(Res.string.app_name),
+                            Modifier.padding(start = 4.dp),
+                            style =
+                                MaterialTheme.typography.titleLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                ),
+                        )
+                    }
+                },
+            ) {
+                Spacer(Modifier.height(48.dp))
+                Column {
                     Text(
-                        stringResource(Res.string.app_name),
-                        Modifier.padding(start = 4.dp),
+                        stringResource(Res.string.wallets),
                         style =
-                            MaterialTheme.typography.titleLarge.copy(
+                            MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                             ),
                     )
+                    Spacer(Modifier.height(12.dp))
+                    NavigationRailItem(
+                        selected = selectedNavItem == SelectedNavItem.Bitcoin,
+                        onClick = {
+                            selectedNavItem = SelectedNavItem.Bitcoin
+                        },
+                        icon = {
+                            Icon(
+                                painterResource(Res.drawable.btc),
+                                null,
+                                tint = bitcoinIconColor,
+                            )
+                        },
+                        label = { Text(stringResource(Res.string.bitcoin)) },
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    NavigationRailItem(
+                        selected = selectedNavItem == SelectedNavItem.Arkade,
+                        onClick = {
+                            selectedNavItem = SelectedNavItem.Arkade
+                        },
+                        icon = {
+                            Icon(
+                                painterResource(Res.drawable.arkade),
+                                null,
+                                tint = arkadeIconColor,
+                            )
+                        },
+                        label = { Text(stringResource(Res.string.arkade)) },
+                    )
                 }
-            },
-        ) {
-            Spacer(Modifier.height(48.dp))
-            Column {
-                Text(
-                    stringResource(Res.string.wallets),
-                    style =
-                        MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
-                )
-                Spacer(Modifier.height(12.dp))
-                NavigationRailItem(
-                    selected = selectedNavItem == SelectedNavItem.Bitcoin,
-                    onClick = {
-                        selectedNavItem = SelectedNavItem.Bitcoin
-                    },
-                    icon = {
-                        Icon(
-                            painterResource(Res.drawable.btc),
-                            null,
-                            tint = bitcoinIconColor,
-                        )
-                    },
-                    label = { Text(stringResource(Res.string.bitcoin)) },
-                )
-                Spacer(Modifier.height(12.dp))
-                NavigationRailItem(
-                    selected = selectedNavItem == SelectedNavItem.Arkade,
-                    onClick = {
-                        selectedNavItem = SelectedNavItem.Arkade
-                    },
-                    icon = {
-                        Icon(
-                            painterResource(Res.drawable.arkade),
-                            null,
-                            tint = arkadeIconColor,
-                        )
-                    },
-                    label = { Text(stringResource(Res.string.arkade)) },
-                )
-            }
-            Spacer(Modifier.height(24.dp))
-            Column {
-                Text(
-                    stringResource(Res.string.payments),
-                    style =
-                        MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Bold,
-                        ),
-                )
-                Spacer(Modifier.height(12.dp))
-                NavigationRailItem(
-                    selected = selectedNavItem == SelectedNavItem.Invoices,
-                    onClick = {
-                        selectedNavItem = SelectedNavItem.Invoices
-                    },
-                    icon = {
-                        Image(
-                            painterResource(Res.drawable.invoice),
-                            null,
-                        )
-                    },
-                    label = { Text(stringResource(Res.string.invoices)) },
-                )
-                Spacer(Modifier.height(12.dp))
-                NavigationRailItem(
-                    selected = selectedNavItem == SelectedNavItem.PayButton,
-                    onClick = {
-                        selectedNavItem = SelectedNavItem.PayButton
-                    },
-                    icon = {
-                        Image(
-                            painterResource(Res.drawable.btc_logo),
-                            null,
-                        )
-                    },
-                    label = { Text(stringResource(Res.string.paybutton)) },
-                )
-            }
-        }
-        when (selectedNavItem) {
-            is SelectedNavItem.Bitcoin -> {
-                val navController = rememberNavController()
-                LaunchedEffect(Unit) {
-                    walletViewModel.onLoadWallets()
+                Spacer(Modifier.height(24.dp))
+                Column {
+                    Text(
+                        stringResource(Res.string.payments),
+                        style =
+                            MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                            ),
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    NavigationRailItem(
+                        selected = selectedNavItem == SelectedNavItem.Invoices,
+                        onClick = {
+                            selectedNavItem = SelectedNavItem.Invoices
+                        },
+                        icon = {
+                            Image(
+                                painterResource(Res.drawable.invoice),
+                                null,
+                            )
+                        },
+                        label = { Text(stringResource(Res.string.invoices)) },
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    NavigationRailItem(
+                        selected = selectedNavItem == SelectedNavItem.PayButton,
+                        onClick = {
+                            selectedNavItem = SelectedNavItem.PayButton
+                        },
+                        icon = {
+                            Image(
+                                painterResource(Res.drawable.btc_logo),
+                                null,
+                            )
+                        },
+                        label = { Text(stringResource(Res.string.paybutton)) },
+                    )
                 }
-                val onChainWalletAvailable = walletViewModel.state.onChainWalletAvailable
-                LaunchedEffect(onChainWalletAvailable) {
-                    if (onChainWalletAvailable) {
-                        navController.navigate(WALLET) {
-                            popUpTo(NO_WALLET) { inclusive = true }
-                            launchSingleTop = true
+            }
+            when (selectedNavItem) {
+                is SelectedNavItem.Bitcoin -> {
+                    val navController = rememberNavController()
+                    LaunchedEffect(Unit) {
+                        walletViewModel.onLoadWallets()
+                    }
+                    val onChainWalletAvailable = walletViewModel.state.onChainWalletAvailable
+                    LaunchedEffect(onChainWalletAvailable) {
+                        if (onChainWalletAvailable) {
+                            navController.navigate(WALLET) {
+                                popUpTo(NO_WALLET) { inclusive = true }
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+
+                    NavHost(navController, NO_WALLET) {
+                        composable(NO_WALLET) {
+                            BitcoinNoWalletScreen(
+                                onNew = {
+                                    navController.navigate(NEW_WALLET) {
+                                        launchSingleTop = true
+                                    }
+                                },
+                            )
+                        }
+                        composable(NEW_WALLET) {
+                            BitcoinNewWalletScreen(
+                                walletViewModel.state,
+                                onLaunch = {
+                                    walletViewModel.onNewWallet(true)
+                                },
+                                onContinue = { passphrase ->
+                                    walletViewModel.updatePassphrase(passphrase)
+                                    navController.navigate(MNEMONIC_CONFIRM) {
+                                        popUpTo(NEW_WALLET)
+                                        launchSingleTop = true
+                                    }
+                                },
+                                onBack = {
+                                    navController.popBackStack()
+                                },
+                            )
+                        }
+                        composable(MNEMONIC_CONFIRM) {
+                            MnemonicConfirmScreen(
+                                walletViewModel.state,
+                                onFinish = { secureStorage ->
+                                    walletViewModel.onCreateWallet(
+                                        true,
+                                        secureStorage,
+                                    ) {
+                                        navController.navigate(WALLET) {
+                                            popUpTo(MNEMONIC_CONFIRM) { inclusive = true }
+                                            launchSingleTop = true
+                                        }
+                                    }
+                                },
+                                onBack = { navController.popBackStack() },
+                            )
+                        }
+                        composable(WALLET) {
+                            BitcoinWalletScreen(walletViewModel.state)
                         }
                     }
                 }
 
-                NavHost(navController, NO_WALLET) {
-                    composable(NO_WALLET) {
-                        BitcoinNoWalletScreen(
-                            onNew = {
-                                navController.navigate(NEW_WALLET) {
-                                    launchSingleTop = true
-                                }
-                            },
-                        )
-                    }
-                    composable(NEW_WALLET) {
-                        BitcoinNewWalletScreen(
-                            walletViewModel.state,
-                            onLaunch = {
-                                walletViewModel.onNewWallet(true)
-                            },
-                            onContinue = { passphrase ->
-                                walletViewModel.updatePassphrase(passphrase)
-                                navController.navigate(MNEMONIC_CONFIRM) {
-                                    popUpTo(NEW_WALLET)
-                                    launchSingleTop = true
-                                }
-                            },
-                            onBack = {
-                                navController.popBackStack()
-                            },
-                        )
-                    }
-                    composable(MNEMONIC_CONFIRM) {
-                        MnemonicConfirmScreen(
-                            walletViewModel.state,
-                            onFinish = { secureStorage ->
-                                walletViewModel.onCreateWallet(
-                                    true,
-                                    secureStorage,
-                                ) {
-                                    navController.navigate(WALLET) {
-                                        popUpTo(MNEMONIC_CONFIRM) { inclusive = true }
-                                        launchSingleTop = true
-                                    }
-                                }
-                            },
-                            onBack = { navController.popBackStack() },
-                        )
-                    }
-                    composable(WALLET) {
-                        BitcoinWalletScreen(walletViewModel.state)
-                    }
-                }
+                is SelectedNavItem.Arkade -> {}
+                is SelectedNavItem.Invoices -> {}
+                is SelectedNavItem.PayButton -> {}
             }
-            is SelectedNavItem.Arkade -> {}
-            is SelectedNavItem.Invoices -> {}
-            is SelectedNavItem.PayButton -> {}
         }
     }
 }
