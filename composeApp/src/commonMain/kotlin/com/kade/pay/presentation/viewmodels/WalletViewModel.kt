@@ -32,7 +32,9 @@ class WalletViewModel(
                     state.copy(
                         isWalletAvailable = true,
                     )
+                return@launch
             }
+            clearMnemonics()
         }
     }
 
