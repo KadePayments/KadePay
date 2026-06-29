@@ -234,6 +234,7 @@ fun MainView(
                             }
                         },
                         onBack = {
+                            walletViewModel.clearMnemonics()
                             navController.popBackStack()
                         },
                     )

@@ -61,10 +61,9 @@ class WalletViewModel(
         }
         viewModelScope.launch {
             runCatching {
-                BitcoinWallet.new(passphrase, mnemonics, state.network, secureStorage)
+                wallet = BitcoinWallet.new(passphrase, mnemonics, state.network, secureStorage)
+                wallet?.let { walletRepo.save(it) }
             }.onSuccess {
-                wallet = it
-                walletRepo.save(it)
                 state = state.copy(passphrase = null, isWalletAvailable = true, mnemonics = emptyList())
                 onSuccess()
             }.onFailure {
@@ -76,6 +75,10 @@ class WalletViewModel(
 
     fun updatePassphrase(value: String) {
         state = state.copy(passphrase = value)
+    }
+
+    fun clearMnemonics() {
+        state = state.copy(mnemonics = emptyList())
     }
 
     fun onDeleteWallet() {
