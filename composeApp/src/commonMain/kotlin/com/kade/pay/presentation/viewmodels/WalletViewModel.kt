@@ -19,38 +19,39 @@ class WalletViewModel(
     var state by mutableStateOf(WalletState())
         private set
     private val walletRepo = WalletRepoImpl(dbBuilder)
-    private var onChainWallet: Wallet? by mutableStateOf(null)
+    private var wallet: Wallet? by mutableStateOf(null)
 
     fun onLoadWallets() {
         viewModelScope.launch {
             val wallets = walletRepo.getAll()
-            val onChainWallet = wallets.find { it.onChain }
-            val onChainWalletAvailable = onChainWallet != null
-            if (onChainWalletAvailable) {
-                this@WalletViewModel.onChainWallet = onChainWallet
+            val wallet = wallets.firstOrNull()
+            val isWalletAvailable = wallet != null
+            if (isWalletAvailable) {
+                this@WalletViewModel.wallet = wallet
                 state =
                     state.copy(
-                        onChainWalletAvailable = true,
-                    )
-            }
-        }
-    }
-
-    fun onNewWallet(onChain: Boolean) {
-        viewModelScope.launch {
-            if (onChain) {
-                state =
-                    state.copy(
-                        mnemonics = BitcoinWallet.generateMnemonics(),
+                        isWalletAvailable = true,
                     )
                 return@launch
             }
-            // Arkade OffChain Wallet
+            clearMnemonics()
+        }
+    }
+
+    fun onNewWallet() {
+        viewModelScope.launch {
+            if (state.mnemonics.isNotEmpty()) {
+                return@launch
+            }
+            state =
+                state.copy(
+                    mnemonics = BitcoinWallet.generateMnemonics(),
+                )
+            return@launch
         }
     }
 
     fun onCreateWallet(
-        onChain: Boolean,
         secureStorage: SecureStorage?,
         onSuccess: () -> Unit,
     ) {
@@ -61,25 +62,25 @@ class WalletViewModel(
             return
         }
         viewModelScope.launch {
-            if (onChain) {
-                runCatching {
-                    BitcoinWallet.new(passphrase, mnemonics, state.onChainNetwork, secureStorage)
-                }.onSuccess {
-                    onChainWallet = it
-                    walletRepo.save(it)
-                    state = state.copy(passphrase = null, onChainWalletAvailable = true, mnemonics = emptyList())
-                    onSuccess()
-                }.onFailure {
-                    state = state.copy(errorMessage = "Failed to create wallet")
-                }
-                return@launch
+            runCatching {
+                wallet = BitcoinWallet.new(passphrase, mnemonics, state.network, secureStorage)
+                wallet?.let { walletRepo.save(it) }
+            }.onSuccess {
+                state = state.copy(passphrase = null, isWalletAvailable = true, mnemonics = emptyList())
+                onSuccess()
+            }.onFailure {
+                state = state.copy(errorMessage = "Failed to create wallet")
             }
-            // Arkade OffChain Wallet
+            return@launch
         }
     }
 
     fun updatePassphrase(value: String) {
         state = state.copy(passphrase = value)
+    }
+
+    fun clearMnemonics() {
+        state = state.copy(mnemonics = emptyList())
     }
 
     fun onDeleteWallet() {

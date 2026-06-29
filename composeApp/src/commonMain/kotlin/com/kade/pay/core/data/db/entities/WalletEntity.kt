@@ -13,13 +13,8 @@ data class WalletEntity(
     val masterPubKey: String,
     val descriptor: String,
     val lastUsedIndex: Int,
-    val onChain: Boolean,
 ) {
-    fun toWallet(): Wallet =
-        when (onChain) {
-            true -> BitcoinWalletImpl(masterPubKey, descriptor, lastUsedIndex, onChain)
-            else -> throw IllegalArgumentException("Unsupported wallet type")
-        }
+    fun toWallet(): Wallet = BitcoinWalletImpl(masterPubKey, descriptor, lastUsedIndex)
 
     companion object {
         fun fromWallet(wallet: Wallet): WalletEntity =
@@ -27,7 +22,6 @@ data class WalletEntity(
                 wallet.masterPubKey,
                 wallet.descriptor,
                 wallet.lastUsedIndex,
-                wallet.onChain,
             )
     }
 }

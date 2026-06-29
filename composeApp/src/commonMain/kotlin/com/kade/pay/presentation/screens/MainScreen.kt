@@ -200,9 +200,9 @@ fun MainView(
             LaunchedEffect(Unit) {
                 walletViewModel.onLoadWallets()
             }
-            val onChainWalletAvailable = walletViewModel.state.onChainWalletAvailable
-            LaunchedEffect(onChainWalletAvailable) {
-                if (onChainWalletAvailable) {
+            val isWalletAvailable = walletViewModel.state.isWalletAvailable
+            LaunchedEffect(isWalletAvailable) {
+                if (isWalletAvailable) {
                     navController.navigate(WALLET) {
                         popUpTo(NO_WALLET) { inclusive = true }
                         launchSingleTop = true
@@ -224,7 +224,7 @@ fun MainView(
                     BitcoinNewWalletScreen(
                         walletViewModel.state,
                         onLaunch = {
-                            walletViewModel.onNewWallet(true)
+                            walletViewModel.onNewWallet()
                         },
                         onContinue = { passphrase ->
                             walletViewModel.updatePassphrase(passphrase)
@@ -234,6 +234,7 @@ fun MainView(
                             }
                         },
                         onBack = {
+                            walletViewModel.clearMnemonics()
                             navController.popBackStack()
                         },
                     )
@@ -243,7 +244,6 @@ fun MainView(
                         walletViewModel.state,
                         onFinish = { secureStorage ->
                             walletViewModel.onCreateWallet(
-                                true,
                                 secureStorage,
                             ) {
                                 navController.navigate(WALLET) {
