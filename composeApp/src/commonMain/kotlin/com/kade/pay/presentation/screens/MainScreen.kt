@@ -28,18 +28,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import com.kade.pay.core.data.db.getDatabaseBuilder
-import com.kade.pay.presentation.screens.wallet.MnemonicConfirmScreen
-import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinNewWalletScreen
-import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinNoWalletScreen
-import com.kade.pay.presentation.screens.wallet.bitcoin.BitcoinWalletScreen
-import com.kade.pay.presentation.screens.wallet.bitcoin.MNEMONIC_CONFIRM
-import com.kade.pay.presentation.screens.wallet.bitcoin.NEW_WALLET
-import com.kade.pay.presentation.screens.wallet.bitcoin.NO_WALLET
-import com.kade.pay.presentation.screens.wallet.bitcoin.WALLET
+import com.kade.pay.presentation.screens.wallet.MainWalletScreen
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.theme.arkadeIconColor
 import com.kade.pay.presentation.theme.bitcoinIconColor
@@ -67,6 +57,15 @@ fun MainScreen() {
         mutableStateOf(SelectedNavItem.Bitcoin)
     }
     val containerWidth = LocalWindowInfo.current.containerDpSize.width
+
+    LaunchedEffect(Unit) {
+        walletViewModel.onLoadWallets()
+    }
+
+    if (walletViewModel.state.isLoading) {
+        LoadingScreen()
+        return
+    }
 
     if (containerWidth < 600.dp) {
         Box {
@@ -196,71 +195,11 @@ fun MainView(
 ) {
     when (selectedNavItem) {
         is SelectedNavItem.Bitcoin -> {
-            val navController = rememberNavController()
-            LaunchedEffect(Unit) {
-                walletViewModel.onLoadWallets()
-            }
-            val isWalletAvailable = walletViewModel.state.isWalletAvailable
-            LaunchedEffect(isWalletAvailable) {
-                if (isWalletAvailable) {
-                    navController.navigate(WALLET) {
-                        popUpTo(NO_WALLET) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
-            }
-
-            NavHost(navController, NO_WALLET) {
-                composable(NO_WALLET) {
-                    BitcoinNoWalletScreen(
-                        onNew = {
-                            navController.navigate(NEW_WALLET) {
-                                launchSingleTop = true
-                            }
-                        },
-                    )
-                }
-                composable(NEW_WALLET) {
-                    BitcoinNewWalletScreen(
-                        walletViewModel.state,
-                        onLaunch = {
-                            walletViewModel.onNewWallet()
-                        },
-                        onContinue = { passphrase ->
-                            walletViewModel.updatePassphrase(passphrase)
-                            navController.navigate(MNEMONIC_CONFIRM) {
-                                popUpTo(NEW_WALLET)
-                                launchSingleTop = true
-                            }
-                        },
-                        onBack = {
-                            walletViewModel.clearMnemonics()
-                            navController.popBackStack()
-                        },
-                    )
-                }
-                composable(MNEMONIC_CONFIRM) {
-                    MnemonicConfirmScreen(
-                        walletViewModel.state,
-                        onFinish = { secureStorage ->
-                            walletViewModel.onCreateWallet(
-                                secureStorage,
-                            ) {
-                                navController.navigate(WALLET) {
-                                    popUpTo(MNEMONIC_CONFIRM) { inclusive = true }
-                                    launchSingleTop = true
-                                }
-                            }
-                        },
-                        onBack = { navController.popBackStack() },
-                    )
-                }
-                composable(WALLET) {
-                    BitcoinWalletScreen(walletViewModel.state)
-                }
-            }
+            MainWalletScreen(walletViewModel)
         }
-        is SelectedNavItem.Arkade -> {}
+        is SelectedNavItem.Arkade -> {
+            MainWalletScreen(walletViewModel)
+        }
         is SelectedNavItem.Invoices -> {}
         is SelectedNavItem.PayButton -> {}
     }
