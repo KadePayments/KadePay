@@ -23,6 +23,7 @@ class WalletViewModel(
 
     fun onLoadWallets() {
         viewModelScope.launch {
+            state = state.copy(isLoading = true)
             val wallets = walletRepo.getAll()
             val wallet = wallets.firstOrNull()
             val isWalletAvailable = wallet != null
@@ -32,9 +33,11 @@ class WalletViewModel(
                     state.copy(
                         isWalletAvailable = true,
                     )
+                state = state.copy(isLoading = false)
                 return@launch
             }
             clearMnemonics()
+            state = state.copy(isLoading = false)
         }
     }
 
