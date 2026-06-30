@@ -1,4 +1,4 @@
-package com.kade.pay.presentation.screens.wallet.bitcoin
+package com.kade.pay.presentation.screens.wallet
 
 const val NO_WALLET = "no-wallet"
 const val WALLET = "wallet"
