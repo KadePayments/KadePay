@@ -32,8 +32,9 @@ class WalletViewModel(
                         state = state.copy(isLoading = false, isWalletAvailable = true)
                         return@launch
                     }
+                    this@WalletViewModel.wallet = null
                     clearMnemonics()
-                    state = state.copy(isLoading = false)
+                    state = state.copy(isLoading = false, isWalletAvailable = false)
                 }.onFailure {
                     wallet = null
                     state = state.copy(isLoading = false, isWalletAvailable = false, errorMessage = "Failed to load wallet")
