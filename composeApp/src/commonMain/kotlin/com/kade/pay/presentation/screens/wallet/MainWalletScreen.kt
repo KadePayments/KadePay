@@ -53,7 +53,7 @@ fun MainWalletScreen(walletViewModel: WalletViewModel) {
                         secureStorage,
                     ) {
                         navController.navigate(WALLET) {
-                            popUpTo(MNEMONIC_CONFIRM) { inclusive = true }
+                            popUpTo(NO_WALLET) { inclusive = true }
                             launchSingleTop = true
                         }
                     }
