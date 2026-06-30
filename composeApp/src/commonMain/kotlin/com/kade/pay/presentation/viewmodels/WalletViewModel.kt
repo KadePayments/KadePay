@@ -23,18 +23,22 @@ class WalletViewModel(
 
     fun onLoadWallets() {
         viewModelScope.launch {
-            val wallets = walletRepo.getAll()
-            val wallet = wallets.firstOrNull()
-            val isWalletAvailable = wallet != null
-            if (isWalletAvailable) {
-                this@WalletViewModel.wallet = wallet
-                state =
-                    state.copy(
-                        isWalletAvailable = true,
-                    )
-                return@launch
-            }
-            clearMnemonics()
+            state = state.copy(isLoading = true)
+            runCatching { walletRepo.getAll().firstOrNull() }
+                .onSuccess { wallet ->
+                    val isWalletAvailable = wallet != null
+                    if (isWalletAvailable) {
+                        this@WalletViewModel.wallet = wallet
+                        state = state.copy(isLoading = false, isWalletAvailable = true)
+                        return@launch
+                    }
+                    this@WalletViewModel.wallet = null
+                    clearMnemonics()
+                    state = state.copy(isLoading = false, isWalletAvailable = false)
+                }.onFailure {
+                    wallet = null
+                    state = state.copy(isLoading = false, isWalletAvailable = false, errorMessage = "Failed to load wallet")
+                }
         }
     }
 
