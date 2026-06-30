@@ -29,15 +29,15 @@ class WalletViewModel(
                     val isWalletAvailable = wallet != null
                     if (isWalletAvailable) {
                         this@WalletViewModel.wallet = wallet
-                        state = state.copy(isWalletAvailable = true)
+                        state = state.copy(isLoading = false, isWalletAvailable = true)
                         return@launch
                     }
                     clearMnemonics()
+                    state = state.copy(isLoading = false)
                 }.onFailure {
                     wallet = null
                     state = state.copy(isLoading = false, isWalletAvailable = false, errorMessage = "Failed to load wallet")
                 }
-            state = state.copy(isLoading = false)
         }
     }
 
