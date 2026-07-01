@@ -59,9 +59,9 @@ interface Wallet {
                     else -> masterKey.encode(true)
                 }
 
-            secureStorage.save(keyFingerprint, masterKeyPrivateKey)
-
             val accountDescriptor = "tr([$keyFingerprint/86'/$coinType'/0']$accountPubKey/0/*)"
+
+            secureStorage.save(accountDescriptor, masterKeyPrivateKey)
 
             return WalletImpl(masterPublicKey, accountDescriptor, 0)
         }

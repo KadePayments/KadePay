@@ -10,7 +10,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class BitcoinWalletTest : com.kade.pay.Test() {
+class WalletTest : com.kade.pay.Test() {
     @Test
     fun `should create bitcoin wallet successfully`() {
         runTest {
@@ -18,7 +18,7 @@ class BitcoinWalletTest : com.kade.pay.Test() {
             val mnemonics = generateMnemonics()
             val wallet =
                 Wallet.new(passphrase, mnemonics, Network.TESTNET, secureStorage)
-            val masterPrivateKey = secureStorage.get(wallet.fingerprint())
+            val masterPrivateKey = secureStorage.get(wallet.descriptor)
 
             assertNotNull(masterPrivateKey)
 
