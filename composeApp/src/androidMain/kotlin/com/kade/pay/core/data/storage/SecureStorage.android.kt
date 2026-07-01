@@ -25,7 +25,7 @@ class SecureStorageImpl(
         value: String,
     ) {
         val encryptedValue = crypto.encrypt(value)
-        val stringPreferenceKey = stringPreferencesKey(key)
+        val stringPreferenceKey = stringPreferencesKey(getSha256Key(key))
         context.dataStore.edit { preferences ->
             preferences[stringPreferenceKey] = encryptedValue
         }
@@ -33,7 +33,7 @@ class SecureStorageImpl(
 
     override suspend fun get(key: String): String? {
         val preferences = context.dataStore.data.first()
-        val stringPreferenceKey = stringPreferencesKey(key)
+        val stringPreferenceKey = stringPreferencesKey(getSha256Key(key))
         val encryptedValue = preferences[stringPreferenceKey]
         return if (encryptedValue != null) {
             crypto.decrypt(encryptedValue)
@@ -43,7 +43,7 @@ class SecureStorageImpl(
     }
 
     override suspend fun delete(key: String) {
-        val stringPreferenceKey = stringPreferencesKey(key)
+        val stringPreferenceKey = stringPreferencesKey(getSha256Key(key))
         context.dataStore.edit { preferences ->
             preferences.remove(stringPreferenceKey)
         }

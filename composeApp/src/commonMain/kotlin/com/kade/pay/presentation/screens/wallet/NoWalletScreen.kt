@@ -1,4 +1,4 @@
-package com.kade.pay.presentation.screens.wallet.bitcoin
+package com.kade.pay.presentation.screens.wallet
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +23,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun BitcoinNoWalletScreen(onNew: () -> Unit = {}) {
+fun NoWalletScreen(onNew: () -> Unit = {}) {
     Column(
         Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -50,8 +50,8 @@ fun BitcoinNoWalletScreen(onNew: () -> Unit = {}) {
 
 @Preview
 @Composable
-fun BitcoinNoWalletScreenPreview() {
+fun NoWalletScreenPreview() {
     KadePayTheme {
-        BitcoinNoWalletScreen()
+        NoWalletScreen()
     }
 }

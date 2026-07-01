@@ -10,7 +10,6 @@ import com.kade.pay.core.data.db.Database
 import com.kade.pay.core.data.repos.WalletRepoImpl
 import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.wallet.Wallet
-import com.kade.pay.core.wallet.bitcoin.BitcoinWallet
 import kotlinx.coroutines.launch
 
 class WalletViewModel(
@@ -49,7 +48,7 @@ class WalletViewModel(
             }
             state =
                 state.copy(
-                    mnemonics = BitcoinWallet.generateMnemonics(),
+                    mnemonics = Wallet.generateMnemonics(),
                 )
             return@launch
         }
@@ -67,7 +66,7 @@ class WalletViewModel(
         }
         viewModelScope.launch {
             runCatching {
-                wallet = BitcoinWallet.new(passphrase, mnemonics, state.network, secureStorage)
+                wallet = Wallet.new(passphrase, mnemonics, state.network, secureStorage)
                 wallet?.let { walletRepo.save(it) }
             }.onSuccess {
                 state = state.copy(passphrase = null, isWalletAvailable = true, mnemonics = emptyList())

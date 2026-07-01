@@ -1,4 +1,4 @@
-package com.kade.pay.presentation.screens.wallet.bitcoin
+package com.kade.pay.presentation.screens.wallet
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -45,7 +45,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun BitcoinWalletScreen(walletState: WalletState) {
+fun WalletScreen(walletState: WalletState) {
     var showBalance by rememberSaveable { mutableStateOf(false) }
     val unit = "₿"
     val hiddenBalance =
@@ -119,8 +119,8 @@ fun BitcoinWalletScreen(walletState: WalletState) {
 
 @Preview
 @Composable
-fun BitcoinWalletScreenPreview() {
+fun WalletScreenPreview() {
     KadePayTheme {
-        BitcoinWalletScreen(WalletState())
+        WalletScreen(WalletState())
     }
 }

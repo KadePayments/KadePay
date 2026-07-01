@@ -1,4 +1,4 @@
-package com.kade.pay.presentation.screens.wallet.bitcoin
+package com.kade.pay.presentation.screens.wallet
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +24,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun BitcoinNewWalletScreen(
+fun NewWalletScreen(
     walletState: WalletState,
     onLaunch: () -> Unit = {},
     onContinue: (String) -> Unit = {},
@@ -62,8 +62,8 @@ fun BitcoinNewWalletScreen(
 
 @Preview
 @Composable
-fun BitcoinNewWalletScreenPreview() {
+fun NewWalletScreenPreview() {
     KadePayTheme {
-        BitcoinNewWalletScreen(WalletState())
+        NewWalletScreen(WalletState())
     }
 }

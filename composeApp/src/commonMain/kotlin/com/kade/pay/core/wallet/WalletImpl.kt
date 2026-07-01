@@ -1,9 +1,9 @@
-package com.kade.pay.core.wallet.bitcoin
+package com.kade.pay.core.wallet
 
-class BitcoinWalletImpl(
+class WalletImpl(
     override val masterPubKey: String,
     override val descriptor: String,
     override val lastUsedIndex: Int,
-) : BitcoinWallet {
+) : Wallet {
     override fun fingerprint(): String = descriptor.substringAfter("tr([").substringBefore("/")
 }

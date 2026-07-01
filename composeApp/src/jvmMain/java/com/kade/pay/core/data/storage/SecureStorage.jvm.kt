@@ -32,11 +32,11 @@ class SecureStorageImpl(
         val combined = salt + iv + encryptedBytes
         val base64String = Base64.getEncoder().encodeToString(combined)
 
-        prefs.put(key, base64String)
+        prefs.put(getSha256Key(key), base64String)
     }
 
     override suspend fun get(key: String): String? {
-        val base64String = prefs.get(key, null) ?: return null
+        val base64String = prefs.get(getSha256Key(key), null) ?: return null
         val combined = Base64.getDecoder().decode(base64String)
 
         val salt = combined.copyOfRange(0, 16)
@@ -50,7 +50,7 @@ class SecureStorageImpl(
     }
 
     override suspend fun delete(key: String) {
-        prefs.remove(key)
+        prefs.remove(getSha256Key(key))
     }
 
     private fun getSecretKey(salt: ByteArray): SecretKeySpec {
