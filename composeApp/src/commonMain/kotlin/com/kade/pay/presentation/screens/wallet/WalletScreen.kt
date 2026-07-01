@@ -1,16 +1,22 @@
 package com.kade.pay.presentation.screens.wallet
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,11 +33,14 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kade.pay.core.data.models.BTC
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
+import kadepay.composeapp.generated.resources.addresses
 import kadepay.composeapp.generated.resources.arrow_outward
 import kadepay.composeapp.generated.resources.hide
 import kadepay.composeapp.generated.resources.receive
@@ -90,28 +99,101 @@ fun WalletScreen(walletState: WalletState) {
                 Text(stringResource(Res.string.your_keys))
             }
             Spacer(Modifier.height(64.dp))
-        }
-        Row {
-            FilledTonalButton(
-                onClick = {},
-                enabled = false,
+            Row(
+                Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
             ) {
-                Icon(
-                    painterResource(Res.drawable.arrow_outward),
-                    stringResource(Res.string.receive),
-                    Modifier.rotate(180F),
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(stringResource(Res.string.receive))
+                FilledTonalButton(
+                    onClick = {},
+                    enabled = false,
+                ) {
+                    Icon(
+                        painterResource(Res.drawable.arrow_outward),
+                        stringResource(Res.string.receive),
+                        Modifier.rotate(180F),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(Res.string.receive))
+                }
+                Spacer(Modifier.width(16.dp))
+                FilledTonalButton(
+                    onClick = {},
+                    enabled = false,
+                ) {
+                    Icon(
+                        painterResource(Res.drawable.arrow_outward),
+                        stringResource(Res.string.send),
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(Res.string.send))
+                }
             }
-            Spacer(Modifier.width(16.dp))
-            FilledTonalButton(
-                onClick = {},
-                enabled = false,
-            ) {
-                Icon(painterResource(Res.drawable.arrow_outward), stringResource(Res.string.send))
-                Spacer(Modifier.width(8.dp))
-                Text(stringResource(Res.string.send))
+            if (walletState.utxos.isNotEmpty()) {
+                Spacer(Modifier.height(16.dp))
+                LazyColumn(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 64.dp, end = 64.dp, top = 16.dp, bottom = 16.dp),
+                ) {
+                    stickyHeader {
+                        Text(
+                            stringResource(Res.string.addresses),
+                            Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.background),
+                            color = MaterialTheme.colorScheme.onBackground,
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        )
+                        Spacer(
+                            Modifier
+                                .height(16.dp)
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.background),
+                        )
+                    }
+                    items(walletState.utxos) { utxo ->
+                        Column(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 16.dp)) {
+                            Row(
+                                Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                // UI here, to be determined by utxo confirmation and/or invoice status
+                                Checkbox(true, {}, Modifier.padding(0.dp))
+                                /*RadioButton(true, onClick = {})
+                            IconButton({}) {
+                                Icon(
+                                    painterResource(Res.drawable.schedule),
+                                    stringResource(Res.string.waiting_confirmation),
+                                    tint = MaterialTheme.colorScheme.primary,
+                                )
+                            }*/
+                                Column {
+                                    Text(
+                                        utxo.address,
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                    Text(
+                                        "InvoiceId: ${utxo.invoiceId}",
+                                        color = MaterialTheme.colorScheme.onBackground,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis,
+                                    )
+                                }
+                                Spacer(Modifier.weight(1f))
+                                Text(
+                                    "${BTC}${utxo.amount}",
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                                    maxLines = 1,
+                                )
+                            }
+                            Spacer(Modifier.height(8.dp))
+                            HorizontalDivider(thickness = 2.dp)
+                        }
+                    }
+                }
             }
         }
     }

@@ -19,4 +19,6 @@
     <string name="show">Shows</string>
     <string name="confirm_mnemonic_code">Confirm your mnemonic code</string>
     <string name="continue_to_confirm">Continue</string>
+    <string name="addresses">Addresses</string>
+    <string name="waiting_confirmation">Waiting confirmation</string>
 </resources>
