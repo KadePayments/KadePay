@@ -1,5 +1,6 @@
 package com.kade.pay.presentation.viewmodels
 
+import com.kade.pay.core.data.models.Utxo
 import com.kade.pay.core.wallet.Network
 
 data class WalletState(
@@ -10,4 +11,5 @@ data class WalletState(
     val isWalletAvailable: Boolean = false,
     val network: Network = Network.TESTNET,
     val errorMessage: String? = null,
+    val utxos: List<Utxo> = emptyList(),
 )
