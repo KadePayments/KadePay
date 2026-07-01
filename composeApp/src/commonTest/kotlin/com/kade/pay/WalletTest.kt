@@ -28,8 +28,8 @@ class WalletTest : com.kade.pay.Test() {
             assertEquals(wallet.fingerprint(), masterKey.extendedPublicKey.keyFingerprint())
             assertEquals(wallet.masterPubKey, masterKey.extendedPublicKey.encode(true))
 
-            secureStorage.delete(wallet.fingerprint())
-            assertEquals(null, secureStorage.get(wallet.fingerprint()))
+            secureStorage.delete(wallet.descriptor)
+            assertEquals(null, secureStorage.get(wallet.descriptor))
         }
     }
 }
