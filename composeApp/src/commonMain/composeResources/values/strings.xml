@@ -16,7 +16,7 @@
     <string name="mnemonic_warn">Write down all these words in the exact order presented. This phrase is your only way to restore your wallet. Never share it or store it digitally—anyone with these words can access your funds.</string>
     <string name="back">Back</string>
     <string name="hide">Hide</string>
-    <string name="show">Shows</string>
+    <string name="show">Show</string>
     <string name="confirm_mnemonic_code">Confirm your mnemonic code</string>
     <string name="continue_to_confirm">Continue</string>
     <string name="addresses">Addresses</string>

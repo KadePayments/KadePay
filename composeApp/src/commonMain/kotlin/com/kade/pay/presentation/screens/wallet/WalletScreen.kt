@@ -1,5 +1,6 @@
 package com.kade.pay.presentation.screens.wallet
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,12 +16,15 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +47,7 @@ import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.addresses
 import kadepay.composeapp.generated.resources.arrow_outward
 import kadepay.composeapp.generated.resources.hide
+import kadepay.composeapp.generated.resources.passphrase
 import kadepay.composeapp.generated.resources.receive
 import kadepay.composeapp.generated.resources.send
 import kadepay.composeapp.generated.resources.show
@@ -53,14 +58,20 @@ import kadepay.composeapp.generated.resources.your_keys
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WalletScreen(walletState: WalletState) {
+fun WalletScreen(
+    walletState: WalletState,
+    onShowKeys: () -> Unit = {},
+) {
     var showBalance by rememberSaveable { mutableStateOf(false) }
     val unit = "₿"
     val hiddenBalance =
         remember(walletState.balance) {
             PasswordVisualTransformation().filter(AnnotatedString("$unit${walletState.balance}"))
         }
+    var showPassphraseInput by rememberSaveable { mutableStateOf(false) }
+
     Box(contentAlignment = Alignment.Center) {
         Column(
             Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background),
@@ -90,9 +101,11 @@ fun WalletScreen(walletState: WalletState) {
             }
             Spacer(Modifier.height(18.dp))
             Button(
-                onClick = {},
+                onClick = {
+                    showPassphraseInput = true
+                    onShowKeys
+                },
                 Modifier.padding(start = 64.dp),
-                enabled = false,
             ) {
                 Icon(painterResource(Res.drawable.wallet), stringResource(Res.string.your_keys))
                 Spacer(Modifier.width(8.dp))
@@ -194,6 +207,31 @@ fun WalletScreen(walletState: WalletState) {
                         }
                     }
                 }
+            }
+        }
+        AnimatedVisibility(showPassphraseInput) {
+            ModalBottomSheet({ showPassphraseInput = false }, Modifier.fillMaxWidth()) {
+                Column(
+                    Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    var passphrase by rememberSaveable { mutableStateOf("") }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        TextField(
+                            passphrase,
+                            onValueChange = { passphrase = it },
+                            label = { Text(stringResource(Res.string.passphrase)) },
+                        )
+                        Spacer(Modifier.width(16.dp))
+                        Button(onClick = {
+                        }) {
+                            Text(stringResource(Res.string.show))
+                        }
+                    }
+                }
+                Spacer(Modifier.height(32.dp))
             }
         }
     }

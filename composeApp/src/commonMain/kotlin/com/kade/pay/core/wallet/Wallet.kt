@@ -3,6 +3,7 @@ package com.kade.pay.core.wallet
 import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.secureRandom
 import fr.acinq.bitcoin.Crypto
+import fr.acinq.bitcoin.Crypto.sha256
 import fr.acinq.bitcoin.DeterministicWallet
 import fr.acinq.bitcoin.KeyPath
 import fr.acinq.bitcoin.MnemonicCode
@@ -62,7 +63,11 @@ interface Wallet {
             val accountDescriptor = "tr([$keyFingerprint/86'/$coinType'/0']$accountPubKey/0/*)"
 
             secureStorage.save(accountDescriptor, masterKeyPrivateKey)
-
+            if (passphrase.isNotBlank()) {
+                val passphraseHash = sha256(passphrase.encodeToByteArray()).toHexString()
+                val key = sha256("passphrase".encodeToByteArray()).toHexString()
+                secureStorage.save(key, passphraseHash)
+            }
             return WalletImpl(masterPublicKey, accountDescriptor, 0)
         }
 
