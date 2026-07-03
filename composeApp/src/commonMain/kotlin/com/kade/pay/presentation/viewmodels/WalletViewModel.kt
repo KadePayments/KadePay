@@ -89,4 +89,18 @@ class WalletViewModel(
     fun onDeleteWallet() {
         TODO()
     }
+
+    fun onShowKeys() {
+        if (wallet != null) {
+            state =
+                state.copy(
+                    pubKey = wallet?.masterPubKey,
+                    walletDescriptor = wallet?.descriptor,
+                )
+        }
+    }
+
+    fun onClearKeys() {
+        state = state.copy(pubKey = null, walletDescriptor = null)
+    }
 }

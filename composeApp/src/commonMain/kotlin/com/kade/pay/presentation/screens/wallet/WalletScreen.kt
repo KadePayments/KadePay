@@ -26,6 +26,8 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,12 +37,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.kade.pay.core.data.models.BTC
+import com.kade.pay.core.data.storage.getSecureStorage
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
@@ -63,6 +69,7 @@ import org.jetbrains.compose.resources.stringResource
 fun WalletScreen(
     walletState: WalletState,
     onShowKeys: () -> Unit = {},
+    onClearKeys: () -> Unit = {},
 ) {
     var showBalance by rememberSaveable { mutableStateOf(false) }
     val unit = "₿"
@@ -70,7 +77,7 @@ fun WalletScreen(
         remember(walletState.balance) {
             PasswordVisualTransformation().filter(AnnotatedString("$unit${walletState.balance}"))
         }
-    var showPassphraseInput by rememberSaveable { mutableStateOf(false) }
+    var showKeysView by rememberSaveable { mutableStateOf(false) }
 
     Box(contentAlignment = Alignment.Center) {
         Column(
@@ -102,8 +109,7 @@ fun WalletScreen(
             Spacer(Modifier.height(18.dp))
             Button(
                 onClick = {
-                    showPassphraseInput = true
-                    onShowKeys
+                    showKeysView = true
                 },
                 Modifier.padding(start = 64.dp),
             ) {
@@ -209,26 +215,102 @@ fun WalletScreen(
                 }
             }
         }
-        AnimatedVisibility(showPassphraseInput) {
-            ModalBottomSheet({ showPassphraseInput = false }, Modifier.fillMaxWidth()) {
+        AnimatedVisibility(showKeysView) {
+            var showKeys by rememberSaveable { mutableStateOf(false) }
+            var showPassInput by rememberSaveable { mutableStateOf(false) }
+            LaunchedEffect(showKeysView) {
+                onShowKeys()
+            }
+            ModalBottomSheet(
+                {
+                    onClearKeys()
+                    showKeysView = false
+                },
+                Modifier.fillMaxWidth(),
+            ) {
                 Column(
-                    Modifier.fillMaxWidth(),
+                    Modifier.fillMaxWidth().padding(start = 64.dp, end = 64.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
+                    val transformation = PasswordVisualTransformation()
+                    if (walletState.pubKey == null) return@ModalBottomSheet
                     var passphrase by rememberSaveable { mutableStateOf("") }
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
+                    val hiddenPubKey =
+                        rememberSaveable {
+                            transformation.filter(
+                                AnnotatedString(
+                                    walletState.pubKey,
+                                ),
+                            )
+                        }
+                    val privKey: MutableState<String?> = rememberSaveable { mutableStateOf(null) }
+                    val pubKey =
+                        buildAnnotatedString {
+                            val text = "PublicKey: "
+                            append(text)
+                            addStyle(
+                                SpanStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp,
+                                ),
+                                0,
+                                text.length,
+                            )
+                            append(
+                                if (showKeys) {
+                                    walletState.pubKey
+                                } else {
+                                    hiddenPubKey.text
+                                },
+                            )
+                        }
+                    val privateKey =
+                        buildAnnotatedString {
+                            val text = "PrivateKey: "
+                            append(text)
+                            addStyle(
+                                SpanStyle(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp,
+                                ),
+                                0,
+                                text.length,
+                            )
+                            append(privKey.value)
+                        }
+
+                    val secureStorage = getSecureStorage(passphrase)
+                    LaunchedEffect(showKeysView, passphrase) {
+                        if (walletState.walletDescriptor != null) {
+                            privKey.value = secureStorage.get(walletState.walletDescriptor)
+                        }
+                        showKeys = privKey.value != null
+                        if (passphrase.isBlank()) {
+                            showPassInput = privKey.value == null
+                        }
+                    }
+
+                    if (showPassInput) {
                         TextField(
                             passphrase,
-                            onValueChange = { passphrase = it },
+                            onValueChange = {
+                                passphrase = it
+                            },
                             label = { Text(stringResource(Res.string.passphrase)) },
+                            maxLines = 1,
                         )
-                        Spacer(Modifier.width(16.dp))
-                        Button(onClick = {
-                        }) {
-                            Text(stringResource(Res.string.show))
-                        }
+                    }
+                    Spacer(Modifier.height(16.dp))
+                    Text(
+                        pubKey,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    if (showKeys) {
+                        Text(
+                            privateKey,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
                     }
                 }
                 Spacer(Modifier.height(32.dp))
