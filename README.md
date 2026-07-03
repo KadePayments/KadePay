@@ -8,7 +8,8 @@
 </p>
 
 ## Overview
-**KadePay** is a self-hosted server for accepting off-chain Bitcoin payments powered by Arkade.
+**KadePay** is a self-hosted server for accepting on-chain and off-chain Bitcoin payments.
+Off-chain payments are powered by [ArkadeOS](https://github.com/arkade-os).
 ⚠ **Note:** This project is under heavy development, do not use for production.
 
 ---
@@ -19,6 +20,7 @@
 |------------|---------------------------|
 | composeApp | Compose Multiplatform App |
 | iosApp     | iOS App                   |
+| scripts    | Utility scripts           |
 
 <p align="center">
 <img src="./assets/architecture.png" alt="architecture">
