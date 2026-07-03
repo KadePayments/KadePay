@@ -234,16 +234,16 @@ fun WalletScreen(
                 ) {
                     val transformation = PasswordVisualTransformation()
                     if (walletState.pubKey == null) return@ModalBottomSheet
-                    var passphrase by rememberSaveable { mutableStateOf("") }
+                    var passphrase by remember { mutableStateOf("") }
                     val hiddenPubKey =
-                        rememberSaveable {
+                        remember {
                             transformation.filter(
                                 AnnotatedString(
                                     walletState.pubKey,
                                 ),
                             )
                         }
-                    val privKey: MutableState<String?> = rememberSaveable { mutableStateOf(null) }
+                    val privKey: MutableState<String?> = remember { mutableStateOf(null) }
                     val pubKey =
                         buildAnnotatedString {
                             val text = "PublicKey: "

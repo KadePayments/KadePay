@@ -14,7 +14,7 @@ class WalletTest : com.kade.pay.Test() {
     @Test
     fun `should create bitcoin wallet successfully`() {
         runTest {
-            val passphrase = ""
+            val passphrase = "passphrase"
             val mnemonics = generateMnemonics()
             val wallet =
                 Wallet.new(passphrase, mnemonics, Network.TESTNET, secureStorage)
