@@ -8,6 +8,8 @@ data class WalletState(
     val balance: Double = 00.00,
     val passphrase: String? = null,
     val mnemonics: List<String> = emptyList(),
+    val pubKey: String? = null,
+    val walletDescriptor: String? = null,
     val isWalletAvailable: Boolean = false,
     val network: Network = Network.TESTNET,
     val errorMessage: String? = null,

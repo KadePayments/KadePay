@@ -37,16 +37,20 @@ class SecureStorageImpl(
 
     override suspend fun get(key: String): String? {
         val base64String = prefs.get(getSha256Key(key), null) ?: return null
-        val combined = Base64.getDecoder().decode(base64String)
+        return try {
+            val combined = Base64.getDecoder().decode(base64String)
 
-        val salt = combined.copyOfRange(0, 16)
-        val iv = combined.copyOfRange(16, 28)
-        val encryptedBytes = combined.copyOfRange(28, combined.size)
+            val salt = combined.copyOfRange(0, 16)
+            val iv = combined.copyOfRange(16, 28)
+            val encryptedBytes = combined.copyOfRange(28, combined.size)
 
-        val cipher = Cipher.getInstance("AES/GCM/NoPadding")
-        cipher.init(Cipher.DECRYPT_MODE, getSecretKey(salt), GCMParameterSpec(128, iv))
+            val cipher = Cipher.getInstance("AES/GCM/NoPadding")
+            cipher.init(Cipher.DECRYPT_MODE, getSecretKey(salt), GCMParameterSpec(128, iv))
 
-        return String(cipher.doFinal(encryptedBytes), Charsets.UTF_8)
+            String(cipher.doFinal(encryptedBytes), Charsets.UTF_8)
+        } catch (_: Exception) {
+            null
+        }
     }
 
     override suspend fun delete(key: String) {

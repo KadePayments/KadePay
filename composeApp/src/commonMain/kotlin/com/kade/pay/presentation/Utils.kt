@@ -1,6 +1,7 @@
 package com.kade.pay.presentation
 
 import androidx.compose.runtime.saveable.Saver
+import fr.acinq.bitcoin.Crypto.sha256
 import kotlin.collections.component1
 import kotlin.collections.component2
 
@@ -39,3 +40,11 @@ val mapSaver =
             }
         },
     )
+
+fun verifyPassphrase(
+    passphrase: String,
+    knownHash: String,
+): Boolean {
+    val passphraseHash = sha256(passphrase.encodeToByteArray()).toHexString()
+    return passphraseHash == knownHash
+}

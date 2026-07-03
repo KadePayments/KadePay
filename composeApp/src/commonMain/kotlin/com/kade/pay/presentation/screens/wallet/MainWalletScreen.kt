@@ -55,7 +55,11 @@ fun MainWalletScreen(walletViewModel: WalletViewModel) {
             )
         }
         composable(WALLET) {
-            WalletScreen(walletViewModel.state)
+            WalletScreen(
+                walletViewModel.state,
+                onShowKeys = walletViewModel::onShowKeys,
+                onClearKeys = walletViewModel::onClearKeys,
+            )
         }
     }
 }
