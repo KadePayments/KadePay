@@ -3,7 +3,9 @@ package com.kade.pay.core.data.storage
 import androidx.compose.runtime.Composable
 import java.security.SecureRandom
 import java.util.Base64
+import java.util.logging.Logger
 import java.util.prefs.Preferences
+import javax.crypto.AEADBadTagException
 import javax.crypto.Cipher
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.GCMParameterSpec
@@ -48,8 +50,13 @@ class SecureStorageImpl(
             cipher.init(Cipher.DECRYPT_MODE, getSecretKey(salt), GCMParameterSpec(128, iv))
 
             String(cipher.doFinal(encryptedBytes), Charsets.UTF_8)
-        } catch (_: Exception) {
+        } catch (_: AEADBadTagException) {
             null
+        } catch (e: Exception) {
+            Logger
+                .getLogger(SecureStorageImpl::class.java.name)
+                .warning("Error getting value for key $key")
+            throw e
         }
     }
 
