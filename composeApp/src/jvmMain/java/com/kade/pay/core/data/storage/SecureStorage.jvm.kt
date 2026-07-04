@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import java.security.SecureRandom
 import java.util.Base64
 import java.util.prefs.Preferences
+import javax.crypto.AEADBadTagException
 import javax.crypto.Cipher
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.GCMParameterSpec
@@ -48,8 +49,11 @@ class SecureStorageImpl(
             cipher.init(Cipher.DECRYPT_MODE, getSecretKey(salt), GCMParameterSpec(128, iv))
 
             String(cipher.doFinal(encryptedBytes), Charsets.UTF_8)
-        } catch (_: Exception) {
-            null
+        } catch (e: Exception) {
+            if (e is AEADBadTagException) {
+                return null
+            }
+            throw e
         }
     }
 
