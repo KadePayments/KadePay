@@ -45,6 +45,7 @@ import kadepay.composeapp.generated.resources.invoices
 import kadepay.composeapp.generated.resources.kade
 import kadepay.composeapp.generated.resources.paybutton
 import kadepay.composeapp.generated.resources.payments
+import kadepay.composeapp.generated.resources.settings
 import kadepay.composeapp.generated.resources.wallets
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -182,6 +183,31 @@ fun MainScreen() {
                         label = { Text(stringResource(Res.string.paybutton)) },
                     )
                 }
+                Spacer(Modifier.height(24.dp))
+                Column {
+                    Text(
+                        stringResource(Res.string.settings),
+                        style =
+                            MaterialTheme.typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                            ),
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    NavigationRailItem(
+                        selected = selectedNavItem == SelectedNavItem.PaymentSettings,
+                        onClick = {
+                            selectedNavItem = SelectedNavItem.PaymentSettings
+                        },
+                        icon = {
+                            Icon(
+                                painterResource(Res.drawable.settings),
+                                null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
+                        },
+                        label = { Text(stringResource(Res.string.payments)) },
+                    )
+                }
             }
             MainView(walletViewModel, selectedNavItem)
         }
@@ -202,6 +228,9 @@ fun MainView(
         }
         is SelectedNavItem.Invoices -> {}
         is SelectedNavItem.PayButton -> {}
+        is SelectedNavItem.PaymentSettings -> {
+            PaymentSettingsScreen {}
+        }
     }
 }
 
@@ -213,6 +242,8 @@ sealed class SelectedNavItem {
     object Invoices : SelectedNavItem()
 
     object PayButton : SelectedNavItem()
+
+    object PaymentSettings : SelectedNavItem()
 }
 
 private val navItemStateSaver =
@@ -223,6 +254,7 @@ private val navItemStateSaver =
                 SelectedNavItem.Arkade -> 1
                 SelectedNavItem.Invoices -> 2
                 SelectedNavItem.PayButton -> 3
+                SelectedNavItem.PaymentSettings -> 4
             }
         },
         {
@@ -231,6 +263,7 @@ private val navItemStateSaver =
                 1 -> SelectedNavItem.Arkade
                 2 -> SelectedNavItem.Invoices
                 3 -> SelectedNavItem.PayButton
+                4 -> SelectedNavItem.PaymentSettings
                 else -> throw IllegalArgumentException("Invalid index")
             }
         },
