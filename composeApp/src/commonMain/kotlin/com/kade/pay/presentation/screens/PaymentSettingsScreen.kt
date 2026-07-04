@@ -33,7 +33,7 @@ import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.confirmation
 import kadepay.composeapp.generated.resources.fast
 import kadepay.composeapp.generated.resources.keyboard_arrow_down
-import kadepay.composeapp.generated.resources.keyboard_arrow_right
+import kadepay.composeapp.generated.resources.keyboard_arrow_up
 import kadepay.composeapp.generated.resources.moderate
 import kadepay.composeapp.generated.resources.payment_settings
 import kadepay.composeapp.generated.resources.solid
@@ -53,7 +53,9 @@ fun PaymentSettingsScreen(onSyncServer: (Confirmation) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             var expandMenu by rememberSaveable { mutableStateOf(false) }
-            var confirmation by rememberSaveable { mutableStateOf("Moderate") }
+            var confirmation by rememberSaveable { mutableStateOf(Confirmation.MODERATE) }
+            val moderateConfirmation = stringResource(Res.string.moderate)
+            var confirmationName by rememberSaveable { mutableStateOf(moderateConfirmation) }
             Text(
                 stringResource(Res.string.payment_settings),
                 color = MaterialTheme.colorScheme.onBackground,
@@ -63,7 +65,7 @@ fun PaymentSettingsScreen(onSyncServer: (Confirmation) -> Unit) {
             Column {
                 Box {
                     TextField(
-                        confirmation,
+                        confirmationName,
                         onValueChange = {},
                         readOnly = true,
                         label = { Text(stringResource(Res.string.confirmation)) },
@@ -73,7 +75,7 @@ fun PaymentSettingsScreen(onSyncServer: (Confirmation) -> Unit) {
                                     if (!expandMenu) {
                                         Res.drawable.keyboard_arrow_down
                                     } else {
-                                        Res.drawable.keyboard_arrow_right
+                                        Res.drawable.keyboard_arrow_up
                                     },
                                 ),
                                 null,
@@ -102,7 +104,8 @@ fun PaymentSettingsScreen(onSyncServer: (Confirmation) -> Unit) {
                             )
                         },
                         onClick = {
-                            confirmation = fast
+                            confirmationName = fast
+                            confirmation = Confirmation.FAST
                             expandMenu = false
                         },
                     )
@@ -114,7 +117,8 @@ fun PaymentSettingsScreen(onSyncServer: (Confirmation) -> Unit) {
                             )
                         },
                         onClick = {
-                            confirmation = moderate
+                            confirmationName = moderate
+                            confirmation = Confirmation.MODERATE
                             expandMenu = false
                         },
                     )
@@ -126,7 +130,8 @@ fun PaymentSettingsScreen(onSyncServer: (Confirmation) -> Unit) {
                             )
                         },
                         onClick = {
-                            confirmation = solid
+                            confirmationName = solid
+                            confirmation = Confirmation.SOLID
                             expandMenu = false
                         },
                     )
@@ -134,7 +139,7 @@ fun PaymentSettingsScreen(onSyncServer: (Confirmation) -> Unit) {
             }
             Spacer(Modifier.height(32.dp))
             Button(
-                onClick = { onSyncServer(Confirmation.fromString(confirmation)) },
+                onClick = { onSyncServer(confirmation) },
             ) {
                 Icon(
                     painterResource(Res.drawable.sync_arrow_up),

@@ -194,9 +194,9 @@ fun MainScreen() {
                     )
                     Spacer(Modifier.height(12.dp))
                     NavigationRailItem(
-                        selected = selectedNavItem == SelectedNavItem.ServerSettings,
+                        selected = selectedNavItem == SelectedNavItem.PaymentSettings,
                         onClick = {
-                            selectedNavItem = SelectedNavItem.ServerSettings
+                            selectedNavItem = SelectedNavItem.PaymentSettings
                         },
                         icon = {
                             Icon(
@@ -228,7 +228,7 @@ fun MainView(
         }
         is SelectedNavItem.Invoices -> {}
         is SelectedNavItem.PayButton -> {}
-        is SelectedNavItem.ServerSettings -> {
+        is SelectedNavItem.PaymentSettings -> {
             PaymentSettingsScreen {}
         }
     }
@@ -243,7 +243,7 @@ sealed class SelectedNavItem {
 
     object PayButton : SelectedNavItem()
 
-    object ServerSettings : SelectedNavItem()
+    object PaymentSettings : SelectedNavItem()
 }
 
 private val navItemStateSaver =
@@ -254,7 +254,7 @@ private val navItemStateSaver =
                 SelectedNavItem.Arkade -> 1
                 SelectedNavItem.Invoices -> 2
                 SelectedNavItem.PayButton -> 3
-                SelectedNavItem.ServerSettings -> 4
+                SelectedNavItem.PaymentSettings -> 4
             }
         },
         {
@@ -263,7 +263,7 @@ private val navItemStateSaver =
                 1 -> SelectedNavItem.Arkade
                 2 -> SelectedNavItem.Invoices
                 3 -> SelectedNavItem.PayButton
-                4 -> SelectedNavItem.ServerSettings
+                4 -> SelectedNavItem.PaymentSettings
                 else -> throw IllegalArgumentException("Invalid index")
             }
         },
