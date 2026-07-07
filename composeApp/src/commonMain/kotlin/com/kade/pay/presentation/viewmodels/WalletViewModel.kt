@@ -10,6 +10,9 @@ import com.kade.pay.core.data.db.Database
 import com.kade.pay.core.data.repos.WalletRepoImpl
 import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.wallet.Wallet
+import com.kade.pay.network.Config
+import com.kade.pay.network.KadePayClient
+import com.kade.pay.network.KadePayClientImpl
 import kotlinx.coroutines.launch
 
 class WalletViewModel(

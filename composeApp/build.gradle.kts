@@ -1,3 +1,4 @@
+import com.squareup.wire.gradle.WireTask
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -11,6 +12,7 @@ plugins {
     alias(libs.plugins.ktlintGradle)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidxRoom)
+    alias(libs.plugins.squareWire)
 }
 
 val currentOs: String = System.getProperty("os.name").lowercase()
@@ -23,6 +25,15 @@ ktlint {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+wire {
+    sourcePath {
+        srcDir("src/commonMain/proto")
+    }
+    kotlin {
+        out = "build/generated/source/wire"
+    }
 }
 
 kotlin {
@@ -60,22 +71,28 @@ kotlin {
             implementation(libs.compose.test.manifest)
             implementation(libs.secp256k1.kmp.jni.jvm)
         }
-        commonMain.dependencies {
-            implementation(libs.compose.runtime)
-            implementation(libs.compose.foundation)
-            implementation(libs.compose.material3)
-            implementation(libs.compose.ui)
-            implementation(libs.compose.components.resources)
-            implementation(libs.compose.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.compose.navigation)
+        commonMain {
+            dependencies {
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.foundation)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.ui)
+                implementation(libs.compose.components.resources)
+                implementation(libs.compose.uiToolingPreview)
+                implementation(libs.androidx.lifecycle.viewmodelCompose)
+                implementation(libs.androidx.lifecycle.runtimeCompose)
+                implementation(libs.compose.navigation)
 
-            implementation(libs.bitcoin.kmp)
-            implementation(libs.secp256k1.kmp)
+                implementation(libs.bitcoin.kmp)
+                implementation(libs.secp256k1.kmp)
 
-            implementation(libs.androidx.room.runtime)
-            implementation(libs.androidx.sqlite.bundled)
+                implementation(libs.androidx.room.runtime)
+                implementation(libs.androidx.sqlite.bundled)
+
+                implementation(libs.square.wire.runtime)
+                implementation(libs.square.wire.grpc.client)
+            }
+            kotlin.srcDir(tasks.withType<WireTask>())
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

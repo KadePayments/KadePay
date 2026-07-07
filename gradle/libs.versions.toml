@@ -27,6 +27,7 @@ tink = "1.15.0"
 datastore = "1.2.1"
 protobuf = "0.10.0"
 robolectric = "4.16.1"
+squareWire = "6.4.5"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -73,6 +74,9 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 
 com-google-crypto-tink = { module = "com.google.crypto.tink:tink-android", version.ref = "tink" }
 
+square-wire-runtime = { group = "com.squareup.wire", name = "wire-runtime", version.ref = "squareWire" }
+square-wire-grpc-client = { group = "com.squareup.wire", name = "wire-grpc-client", version.ref = "squareWire" }
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -84,3 +88,4 @@ ktlintGradle = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 androidxRoom = { id = "androidx.room", version.ref = "room" }
 googleProtobuf = { id = "com.google.protobuf", version.ref = "protobuf" }
+squareWire = { id = "com.squareup.wire", version.ref = "squareWire" }

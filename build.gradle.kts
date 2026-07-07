@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.ktlintGradle) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.googleProtobuf) apply false
+    alias(libs.plugins.squareWire) apply false
 }
