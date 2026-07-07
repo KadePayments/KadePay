@@ -20,15 +20,15 @@ class KadePayClientImpl(
         return response.x_pub_key_id
     }
 
-    override suspend fun createInvoice(request: Invoice): Invoice {
+    override suspend fun createInvoice(invoice: Invoice): Invoice {
         val request =
             NewInvoiceRequest(
-                request.xPubKeyId,
-                request.chain,
-                request.network.name,
-                request.currencyCode,
-                request.amount.toString(),
-                request.description ?: "",
+                invoice.xPubKeyId,
+                invoice.chain,
+                invoice.network.name,
+                invoice.currencyCode,
+                invoice.amount.toString(),
+                invoice.description ?: "",
             )
         val response = invoicesClient.CreateInvoice().execute(request)
         return Invoice.fromResponse(response)

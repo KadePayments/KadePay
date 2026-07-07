@@ -17,19 +17,22 @@ data class Invoice(
     val childKeyIndex: Int,
 ) {
     companion object {
-        fun fromResponse(response: InvoiceResponse): Invoice =
-            Invoice(
-                response.id,
-                response.x_pub_key_id,
-                response.chain,
-                Network.valueOf(response.network),
-                response.currency_code,
-                response.amount.toLong(),
-                response.address,
-                response.created_at,
-                response.description,
-                response.status,
-                response.child_key_index,
+        fun fromResponse(response: InvoiceResponse): Invoice {
+            val amount = response.amount.toLongOrNull()
+            requireNotNull(amount) { "Invalid invoice amount" }
+            return Invoice(
+                id = response.id,
+                xPubKeyId = response.x_pub_key_id,
+                chain = response.chain,
+                network = Network.fromString(response.network),
+                currencyCode = response.currency_code,
+                amount = amount,
+                address = response.address,
+                createdAt = response.created_at,
+                description = response.description,
+                status = response.status,
+                childKeyIndex = response.child_key_index,
             )
+        }
     }
 }
