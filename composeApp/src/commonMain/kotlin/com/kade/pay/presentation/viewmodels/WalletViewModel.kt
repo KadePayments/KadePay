@@ -10,6 +10,7 @@ import com.kade.pay.core.data.db.Database
 import com.kade.pay.core.data.repos.WalletRepoImpl
 import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.wallet.Wallet
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
 class WalletViewModel(
@@ -35,6 +36,7 @@ class WalletViewModel(
                     clearMnemonics()
                     state = state.copy(isLoading = false, isWalletAvailable = false)
                 }.onFailure {
+                    if (it is CancellationException) throw it
                     wallet = null
                     state = state.copy(isLoading = false, isWalletAvailable = false, errorMessage = "Failed to load wallet")
                 }
@@ -72,6 +74,7 @@ class WalletViewModel(
                 state = state.copy(passphrase = null, isWalletAvailable = true, mnemonics = emptyList())
                 onSuccess()
             }.onFailure {
+                if (it is CancellationException) throw it
                 state = state.copy(errorMessage = "Failed to create wallet")
             }
             return@launch
