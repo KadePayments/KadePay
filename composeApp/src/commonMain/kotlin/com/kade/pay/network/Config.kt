@@ -4,6 +4,7 @@ enum class Config(
     val kadePayUrl: String,
 ) {
     MAINNET(""),
-    TESTNET("http://localhost:50051"),
-    REGTEST(""),
+    TESTNET(""),
+    SIGNET(""),
+    REGTEST("http://localhost:50051"),
 }
