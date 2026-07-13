@@ -29,6 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.kade.pay.core.validateUrl
 import com.kade.pay.core.wallet.Network
 import com.kade.pay.network.Config
 import com.kade.pay.presentation.theme.KadePayTheme
@@ -62,13 +63,7 @@ fun ServerSettingsScreen(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val derivedNetwork =
-                when (config) {
-                    Config.MAINNET -> Network.MAINNET
-                    Config.SIGNET -> Network.SIGNET
-                    Config.REGTEST -> Network.REGTEST
-                    Config.TESTNET -> Network.TESTNET
-                }
+            val derivedNetwork = config.network
             var serverUrl by rememberSaveable { mutableStateOf(config.kadePayUrl) }
             var network by rememberSaveable { mutableStateOf(derivedNetwork) }
             var expandMenu by rememberSaveable { mutableStateOf(false) }
@@ -87,9 +82,13 @@ fun ServerSettingsScreen(
                     },
                     readOnly = isReadOnlyServerUrl,
                     label = { Text(stringResource(Res.string.server_url)) },
+                    singleLine = true,
                     trailingIcon = {
                         IconButton(
-                            onClick = { isReadOnlyServerUrl = !isReadOnlyServerUrl },
+                            onClick = {
+                                if (network == Network.REGTEST) return@IconButton
+                                isReadOnlyServerUrl = !isReadOnlyServerUrl
+                            },
                         ) {
                             Icon(
                                 painterResource(Res.drawable.link),
@@ -155,6 +154,8 @@ fun ServerSettingsScreen(
                         onClick = {
                             network = Network.MAINNET
                             expandMenu = false
+                            serverUrl = ""
+                            isReadOnlyServerUrl = false
                         },
                     )
                     DropdownMenuItem(
@@ -173,6 +174,8 @@ fun ServerSettingsScreen(
                         onClick = {
                             network = Network.SIGNET
                             expandMenu = false
+                            serverUrl = ""
+                            isReadOnlyServerUrl = false
                         },
                     )
                     DropdownMenuItem(
@@ -191,6 +194,8 @@ fun ServerSettingsScreen(
                         onClick = {
                             network = Network.REGTEST
                             expandMenu = false
+                            serverUrl = Config.RegTest.kadePayUrl
+                            isReadOnlyServerUrl = true
                         },
                     )
                     DropdownMenuItem(
@@ -209,13 +214,25 @@ fun ServerSettingsScreen(
                         onClick = {
                             network = Network.TESTNET
                             expandMenu = false
+                            serverUrl = ""
+                            isReadOnlyServerUrl = false
                         },
                     )
                 }
             }
             Spacer(Modifier.height(32.dp))
             Button(
-                onClick = { onSyncServer(serverUrl, network) },
+                onClick = {
+                    // Notify user to enter a valid URL
+                    if (serverUrl.isEmpty()) {
+                        return@Button
+                    }
+                    // Notify user to enter a valid URL
+                    if (!validateUrl(serverUrl)) {
+                        return@Button
+                    }
+                    onSyncServer(serverUrl, network)
+                },
             ) {
                 Icon(
                     painterResource(Res.drawable.sync_arrow_up),
@@ -233,7 +250,7 @@ fun ServerSettingsScreen(
 fun ServerSettingsScreenPreview() {
     KadePayTheme {
         ServerSettingsScreen(
-            Config.REGTEST,
+            Config.RegTest,
             onSyncServer = { _, _ -> },
         )
     }

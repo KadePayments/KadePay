@@ -249,7 +249,9 @@ fun MainView(
             PaymentSettingsScreen {}
         }
         is SelectedNavItem.ServerSettings -> {
-            ServerSettingsScreen(walletViewModel.state.config) { _, _ -> }
+            ServerSettingsScreen(walletViewModel.state.config) { url, network ->
+                walletViewModel.onUpdateConfig(url, network)
+            }
         }
     }
 }

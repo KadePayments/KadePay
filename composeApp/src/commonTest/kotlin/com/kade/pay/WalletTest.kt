@@ -1,9 +1,9 @@
 package com.kade.pay
 
-import com.kade.pay.core.wallet.Network
 import com.kade.pay.core.wallet.Wallet
 import com.kade.pay.core.wallet.Wallet.Companion.generateMnemonics
 import com.kade.pay.core.wallet.Wallet.Companion.keyFingerprint
+import com.kade.pay.network.Config
 import fr.acinq.bitcoin.DeterministicWallet
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -17,7 +17,7 @@ class WalletTest : com.kade.pay.Test() {
             val passphrase = "passphrase"
             val mnemonics = generateMnemonics()
             val wallet =
-                Wallet.new(passphrase, mnemonics, Network.TESTNET, secureStorage)
+                Wallet.new(passphrase, mnemonics, secureStorage, Config.RegTest)
             val masterPrivateKey = secureStorage.get(wallet.descriptor)
 
             assertNotNull(masterPrivateKey)

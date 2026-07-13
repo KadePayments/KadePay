@@ -9,7 +9,9 @@ import androidx.room.RoomDatabase
 import com.kade.pay.core.data.db.Database
 import com.kade.pay.core.data.repos.WalletRepoImpl
 import com.kade.pay.core.data.storage.SecureStorage
+import com.kade.pay.core.wallet.Network
 import com.kade.pay.core.wallet.Wallet
+import com.kade.pay.network.Config
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
@@ -68,7 +70,7 @@ class WalletViewModel(
         }
         viewModelScope.launch {
             runCatching {
-                wallet = Wallet.new(passphrase, mnemonics, state.network, secureStorage)
+                wallet = Wallet.new(passphrase, mnemonics, secureStorage, state.config)
                 wallet?.let { walletRepo.save(it) }
             }.onSuccess {
                 state = state.copy(passphrase = null, isWalletAvailable = true, mnemonics = emptyList())
@@ -105,5 +107,12 @@ class WalletViewModel(
 
     fun onClearKeys() {
         state = state.copy(pubKey = null, walletDescriptor = null)
+    }
+
+    fun onUpdateConfig(
+        url: String,
+        network: Network,
+    ) {
+        state = state.copy(config = Config.from(url, network.name))
     }
 }
