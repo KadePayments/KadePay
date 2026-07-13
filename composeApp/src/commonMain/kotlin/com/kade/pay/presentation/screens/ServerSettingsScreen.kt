@@ -85,7 +85,10 @@ fun ServerSettingsScreen(
                     singleLine = true,
                     trailingIcon = {
                         IconButton(
-                            onClick = { isReadOnlyServerUrl = !isReadOnlyServerUrl },
+                            onClick = {
+                                if (network == Network.REGTEST) return@IconButton
+                                isReadOnlyServerUrl = !isReadOnlyServerUrl
+                            },
                         ) {
                             Icon(
                                 painterResource(Res.drawable.link),
@@ -192,7 +195,7 @@ fun ServerSettingsScreen(
                             network = Network.REGTEST
                             expandMenu = false
                             serverUrl = Config.RegTest.kadePayUrl
-                            isReadOnlyServerUrl = false
+                            isReadOnlyServerUrl = true
                         },
                     )
                     DropdownMenuItem(
