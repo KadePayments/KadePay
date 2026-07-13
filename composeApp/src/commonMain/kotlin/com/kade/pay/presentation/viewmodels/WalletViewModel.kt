@@ -7,6 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.RoomDatabase
 import com.kade.pay.core.data.db.Database
+import com.kade.pay.core.data.repos.InvoiceRepo
+import com.kade.pay.core.data.repos.InvoiceRepoImpl
+import com.kade.pay.core.data.repos.WalletRepo
 import com.kade.pay.core.data.repos.WalletRepoImpl
 import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.wallet.Network
@@ -20,7 +23,8 @@ class WalletViewModel(
 ) : ViewModel() {
     var state by mutableStateOf(WalletState())
         private set
-    private val walletRepo = WalletRepoImpl(dbBuilder)
+    private val walletRepo: WalletRepo = WalletRepoImpl(dbBuilder)
+    private val invoiceRepo: InvoiceRepo = InvoiceRepoImpl(dbBuilder)
     private var wallet: Wallet? by mutableStateOf(null)
 
     fun onLoadWallets() {
@@ -36,12 +40,20 @@ class WalletViewModel(
                     }
                     this@WalletViewModel.wallet = null
                     clearMnemonics()
+                    onLoadInvoices()
                     state = state.copy(isLoading = false, isWalletAvailable = false)
                 }.onFailure {
                     if (it is CancellationException) throw it
                     wallet = null
                     state = state.copy(isLoading = false, isWalletAvailable = false, errorMessage = "Failed to load wallet")
                 }
+        }
+    }
+
+    fun onLoadInvoices() {
+        viewModelScope.launch {
+            val invoices = invoiceRepo.getAll()
+            state = state.copy(invoices = invoices)
         }
     }
 
