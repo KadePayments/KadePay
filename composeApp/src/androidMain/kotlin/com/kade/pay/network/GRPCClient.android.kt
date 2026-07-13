@@ -11,7 +11,7 @@ actual fun grpcClient(config: Config): GrpcClient {
             is Config.MainNet -> Protocol.HTTP_2
             is Config.SigNet -> Protocol.HTTP_2
             is Config.TestNet -> Protocol.HTTP_2
-            Config.RegTest -> Protocol.H2_PRIOR_KNOWLEDGE
+            is Config.RegTest -> Protocol.H2_PRIOR_KNOWLEDGE
         }
     return GrpcClient
         .Builder()
