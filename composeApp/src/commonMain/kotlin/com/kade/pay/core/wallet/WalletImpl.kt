@@ -8,5 +8,11 @@ class WalletImpl(
     override val lastUsedIndex: Int,
     override val config: Config = Config.RegTest,
 ) : Wallet {
+    override lateinit var walletId: String
+
     override fun fingerprint(): String = descriptor.substringAfter("tr([").substringBefore("/")
+
+    override fun updateWalletId(walletId: String) {
+        this.walletId = walletId
+    }
 }

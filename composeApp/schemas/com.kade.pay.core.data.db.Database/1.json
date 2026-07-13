@@ -2,15 +2,21 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "82ad7305033517c8df55c10aab58064c",
+    "identityHash": "0c384a0ed1fd5a1922cb282327d34847",
     "entities": [
       {
         "tableName": "wallets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`masterPubKey` TEXT NOT NULL, `descriptor` TEXT NOT NULL, `lastUsedIndex` INTEGER NOT NULL, `network` TEXT NOT NULL, `serverUrl` TEXT NOT NULL, PRIMARY KEY(`masterPubKey`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`masterPubKey` TEXT NOT NULL, `walletId` TEXT NOT NULL, `descriptor` TEXT NOT NULL, `lastUsedIndex` INTEGER NOT NULL, `network` TEXT NOT NULL, `serverUrl` TEXT NOT NULL, PRIMARY KEY(`masterPubKey`))",
         "fields": [
           {
             "fieldPath": "masterPubKey",
             "columnName": "masterPubKey",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "walletId",
+            "columnName": "walletId",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -49,7 +55,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '82ad7305033517c8df55c10aab58064c')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0c384a0ed1fd5a1922cb282327d34847')"
     ]
   }
 }

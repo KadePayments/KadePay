@@ -11,9 +11,12 @@ class WalletRepoImpl(
 ) : WalletRepo {
     private val storage = WalletStorageImpl(dbBuilder)
 
-    override suspend fun save(wallet: Wallet) {
-        storage.save(WalletEntity.fromWallet(wallet))
-    }
+    override suspend fun save(wallet: Wallet) = storage.save(WalletEntity.fromWallet(wallet))
+
+    override suspend fun updateWalletId(
+        masterPubKey: String,
+        walletId: String,
+    ) = storage.updateWalletId(masterPubKey, walletId)
 
     override suspend fun getAll(): List<Wallet> = storage.getAll().map { it.toWallet() }
 

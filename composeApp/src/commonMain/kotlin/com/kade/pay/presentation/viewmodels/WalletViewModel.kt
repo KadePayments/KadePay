@@ -77,10 +77,17 @@ class WalletViewModel(
                 wallet = Wallet.new(passphrase, mnemonics, secureStorage, state.config)
                 wallet?.let { walletRepo.save(it) }
             }.onSuccess {
-                state = state.copy(passphrase = null, isWalletAvailable = true, mnemonics = emptyList())
+                state = state.copy(isLoading = true, passphrase = null, isWalletAvailable = true, mnemonics = emptyList())
+
                 client = KadePayClientImpl(wallet?.config!!)
-                client?.createWallet(wallet?.masterPubKey!!)
+
+                val masterPubKey = requireNotNull(wallet?.masterPubKey)
+                val walletId = requireNotNull(client?.createWallet(masterPubKey))
+                wallet?.updateWalletId(walletId)
+                walletRepo.updateWalletId(masterPubKey, walletId)
+
                 onSuccess()
+                state = state.copy(isLoading = false)
             }.onFailure {
                 if (it is CancellationException) throw it
                 state = state.copy(errorMessage = "Failed to create wallet")
