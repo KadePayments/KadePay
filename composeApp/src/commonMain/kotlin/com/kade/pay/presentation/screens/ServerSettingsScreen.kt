@@ -19,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -38,6 +37,7 @@ import kadepay.composeapp.generated.resources.btc_logo
 import kadepay.composeapp.generated.resources.btc_regtest
 import kadepay.composeapp.generated.resources.btc_signet
 import kadepay.composeapp.generated.resources.btc_testnet
+import kadepay.composeapp.generated.resources.edit_server_url
 import kadepay.composeapp.generated.resources.keyboard_arrow_down
 import kadepay.composeapp.generated.resources.keyboard_arrow_up
 import kadepay.composeapp.generated.resources.link
@@ -62,14 +62,13 @@ fun ServerSettingsScreen(
             Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            val derivedNetwork by derivedStateOf {
+            val derivedNetwork =
                 when (config) {
                     Config.MAINNET -> Network.MAINNET
                     Config.SIGNET -> Network.SIGNET
                     Config.REGTEST -> Network.REGTEST
                     Config.TESTNET -> Network.TESTNET
                 }
-            }
             var serverUrl by rememberSaveable { mutableStateOf(config.kadePayUrl) }
             var network by rememberSaveable { mutableStateOf(derivedNetwork) }
             var expandMenu by rememberSaveable { mutableStateOf(false) }
@@ -94,7 +93,7 @@ fun ServerSettingsScreen(
                         ) {
                             Icon(
                                 painterResource(Res.drawable.link),
-                                null,
+                                stringResource(Res.string.edit_server_url),
                             )
                         }
                     },

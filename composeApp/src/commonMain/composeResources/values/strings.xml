@@ -33,4 +33,5 @@
     <string name="sync_server">Sync server</string>
     <string name="server_url">Server URL</string>
     <string name="network">Network</string>
+    <string name="edit_server_url">Edit server url</string>
 </resources>

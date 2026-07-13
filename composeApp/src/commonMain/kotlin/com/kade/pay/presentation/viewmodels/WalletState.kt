@@ -12,7 +12,7 @@ data class WalletState(
     val pubKey: String? = null,
     val walletDescriptor: String? = null,
     val isWalletAvailable: Boolean = false,
-    val network: Network = Network.TESTNET,
+    val network: Network = Network.REGTEST,
     val errorMessage: String? = null,
     val utxos: List<Utxo> = emptyList(),
     val config: Config = Config.REGTEST,
