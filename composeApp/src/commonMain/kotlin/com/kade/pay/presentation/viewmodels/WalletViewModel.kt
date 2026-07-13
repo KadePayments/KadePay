@@ -12,6 +12,8 @@ import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.wallet.Network
 import com.kade.pay.core.wallet.Wallet
 import com.kade.pay.network.Config
+import com.kade.pay.network.KadePayClient
+import com.kade.pay.network.KadePayClientImpl
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
@@ -21,7 +23,8 @@ class WalletViewModel(
     var state by mutableStateOf(WalletState())
         private set
     private val walletRepo = WalletRepoImpl(dbBuilder)
-    private var wallet: Wallet? by mutableStateOf(null)
+    private var wallet: Wallet? = null
+    private var client: KadePayClient? = null
 
     fun onLoadWallets() {
         viewModelScope.launch {
@@ -31,7 +34,8 @@ class WalletViewModel(
                     val isWalletAvailable = wallet != null
                     if (isWalletAvailable) {
                         this@WalletViewModel.wallet = wallet
-                        state = state.copy(isLoading = false, isWalletAvailable = true)
+                        client = KadePayClientImpl(wallet.config)
+                        state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
                         return@launch
                     }
                     this@WalletViewModel.wallet = null
@@ -74,6 +78,8 @@ class WalletViewModel(
                 wallet?.let { walletRepo.save(it) }
             }.onSuccess {
                 state = state.copy(passphrase = null, isWalletAvailable = true, mnemonics = emptyList())
+                client = KadePayClientImpl(wallet?.config!!)
+                client?.createWallet(wallet?.masterPubKey!!)
                 onSuccess()
             }.onFailure {
                 if (it is CancellationException) throw it
