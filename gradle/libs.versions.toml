@@ -28,6 +28,7 @@ datastore = "1.2.1"
 protobuf = "0.10.0"
 robolectric = "4.16.1"
 squareWire = "6.4.5"
+ktor = "3.5.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -76,6 +77,8 @@ com-google-crypto-tink = { module = "com.google.crypto.tink:tink-android", versi
 
 square-wire-runtime = { group = "com.squareup.wire", name = "wire-runtime", version.ref = "squareWire" }
 square-wire-grpc-client = { group = "com.squareup.wire", name = "wire-grpc-client", version.ref = "squareWire" }
+
+io-ktor-http = { module = "io.ktor:ktor-http", version.ref = "ktor" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

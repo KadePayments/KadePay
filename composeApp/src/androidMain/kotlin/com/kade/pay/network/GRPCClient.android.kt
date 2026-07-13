@@ -8,10 +8,10 @@ import kotlin.time.Duration.Companion.seconds
 actual fun grpcClient(config: Config): GrpcClient {
     val httpProtocol =
         when (config) {
-            Config.MAINNET -> Protocol.HTTP_2
-            Config.SIGNET -> Protocol.HTTP_2
-            Config.TESTNET -> Protocol.HTTP_2
-            Config.REGTEST -> Protocol.H2_PRIOR_KNOWLEDGE
+            is Config.MainNet -> Protocol.HTTP_2
+            is Config.SigNet -> Protocol.HTTP_2
+            is Config.TestNet -> Protocol.HTTP_2
+            Config.RegTest -> Protocol.H2_PRIOR_KNOWLEDGE
         }
     return GrpcClient
         .Builder()

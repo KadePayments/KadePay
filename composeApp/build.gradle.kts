@@ -91,6 +91,8 @@ kotlin {
 
                 implementation(libs.square.wire.runtime)
                 implementation(libs.square.wire.grpc.client)
+
+                implementation(libs.io.ktor.http)
             }
             kotlin.srcDir(tasks.withType<WireTask>())
         }

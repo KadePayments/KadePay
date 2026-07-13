@@ -2,6 +2,7 @@ package com.kade.pay.core.wallet
 
 import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.secureRandom
+import com.kade.pay.network.Config
 import fr.acinq.bitcoin.Crypto
 import fr.acinq.bitcoin.DeterministicWallet
 import fr.acinq.bitcoin.KeyPath
@@ -11,6 +12,7 @@ interface Wallet {
     val masterPubKey: String
     val descriptor: String
     val lastUsedIndex: Int
+    val config: Config
 
     fun fingerprint(): String
 
@@ -23,8 +25,8 @@ interface Wallet {
         suspend fun new(
             passphrase: String,
             mnemonics: List<String>,
-            network: Network,
             secureStorage: SecureStorage,
+            config: Config,
         ): Wallet {
             val mnemonicString = mnemonics.joinToString(" ") { it }
             MnemonicCode.validate(mnemonicString)
@@ -32,6 +34,8 @@ interface Wallet {
             val seed = MnemonicCode.toSeed(mnemonics, passphrase)
             val masterKey = DeterministicWallet.generate(seed)
             val keyFingerprint = masterKey.extendedPublicKey.keyFingerprint()
+
+            val network = config.network
 
             val coinType =
                 when (network) {
@@ -62,7 +66,7 @@ interface Wallet {
             val accountDescriptor = "tr([$keyFingerprint/86'/$coinType'/0']$accountPubKey/0/*)"
 
             secureStorage.save(accountDescriptor, masterKeyPrivateKey)
-            return WalletImpl(masterPublicKey, accountDescriptor, 0)
+            return WalletImpl(masterPublicKey, accountDescriptor, 0, config)
         }
 
         fun import(): Wallet {
