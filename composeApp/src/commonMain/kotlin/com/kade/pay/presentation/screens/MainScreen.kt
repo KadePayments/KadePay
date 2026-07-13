@@ -40,11 +40,13 @@ import kadepay.composeapp.generated.resources.arkade
 import kadepay.composeapp.generated.resources.bitcoin
 import kadepay.composeapp.generated.resources.btc
 import kadepay.composeapp.generated.resources.btc_logo
+import kadepay.composeapp.generated.resources.credit_card_gear
 import kadepay.composeapp.generated.resources.invoice
 import kadepay.composeapp.generated.resources.invoices
 import kadepay.composeapp.generated.resources.kade
 import kadepay.composeapp.generated.resources.paybutton
 import kadepay.composeapp.generated.resources.payments
+import kadepay.composeapp.generated.resources.server
 import kadepay.composeapp.generated.resources.settings
 import kadepay.composeapp.generated.resources.wallets
 import org.jetbrains.compose.resources.painterResource
@@ -200,12 +202,27 @@ fun MainScreen() {
                         },
                         icon = {
                             Icon(
-                                painterResource(Res.drawable.settings),
+                                painterResource(Res.drawable.credit_card_gear),
                                 null,
                                 tint = MaterialTheme.colorScheme.onSurface,
                             )
                         },
                         label = { Text(stringResource(Res.string.payments)) },
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    NavigationRailItem(
+                        selected = selectedNavItem == SelectedNavItem.ServerSettings,
+                        onClick = {
+                            selectedNavItem = SelectedNavItem.ServerSettings
+                        },
+                        icon = {
+                            Icon(
+                                painterResource(Res.drawable.settings),
+                                null,
+                                tint = MaterialTheme.colorScheme.onSurface,
+                            )
+                        },
+                        label = { Text(stringResource(Res.string.server)) },
                     )
                 }
             }
@@ -231,6 +248,9 @@ fun MainView(
         is SelectedNavItem.PaymentSettings -> {
             PaymentSettingsScreen {}
         }
+        is SelectedNavItem.ServerSettings -> {
+            ServerSettingsScreen(walletViewModel.state.config) { _, _ -> }
+        }
     }
 }
 
@@ -244,6 +264,8 @@ sealed class SelectedNavItem {
     object PayButton : SelectedNavItem()
 
     object PaymentSettings : SelectedNavItem()
+
+    object ServerSettings : SelectedNavItem()
 }
 
 private val navItemStateSaver =
@@ -255,6 +277,7 @@ private val navItemStateSaver =
                 SelectedNavItem.Invoices -> 2
                 SelectedNavItem.PayButton -> 3
                 SelectedNavItem.PaymentSettings -> 4
+                SelectedNavItem.ServerSettings -> 5
             }
         },
         {
@@ -264,6 +287,7 @@ private val navItemStateSaver =
                 2 -> SelectedNavItem.Invoices
                 3 -> SelectedNavItem.PayButton
                 4 -> SelectedNavItem.PaymentSettings
+                5 -> SelectedNavItem.ServerSettings
                 else -> throw IllegalArgumentException("Invalid index")
             }
         },

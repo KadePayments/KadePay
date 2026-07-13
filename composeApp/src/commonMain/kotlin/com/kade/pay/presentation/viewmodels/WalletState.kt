@@ -2,6 +2,7 @@ package com.kade.pay.presentation.viewmodels
 
 import com.kade.pay.core.data.models.Utxo
 import com.kade.pay.core.wallet.Network
+import com.kade.pay.network.Config
 
 data class WalletState(
     val isLoading: Boolean = true,
@@ -14,4 +15,5 @@ data class WalletState(
     val network: Network = Network.TESTNET,
     val errorMessage: String? = null,
     val utxos: List<Utxo> = emptyList(),
+    val config: Config = Config.REGTEST,
 )

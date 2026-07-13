@@ -76,3 +76,7 @@ val surfaceContainerHighestDark = Color(0xFF313631)
 
 val bitcoinIconColor = Color(0xFFF7931A)
 val arkadeIconColor = Color(0xFF351791)
+
+val signetColor = Color(0xFF405808)
+val testnetColor = Color(0xFF1AF785)
+val regtestColor = Color(0xFF1AB8F7)
