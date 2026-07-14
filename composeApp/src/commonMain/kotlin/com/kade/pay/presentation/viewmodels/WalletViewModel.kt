@@ -35,12 +35,12 @@ class WalletViewModel(
                     val isWalletAvailable = wallet != null
                     if (isWalletAvailable) {
                         this@WalletViewModel.wallet = wallet
+                        onLoadInvoices()
                         state = state.copy(isLoading = false, isWalletAvailable = true)
                         return@launch
                     }
                     this@WalletViewModel.wallet = null
                     clearMnemonics()
-                    onLoadInvoices()
                     state = state.copy(isLoading = false, isWalletAvailable = false)
                 }.onFailure {
                     if (it is CancellationException) throw it
