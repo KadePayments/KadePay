@@ -6,19 +6,23 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.kade.pay.core.data.db.dao.InvoiceDao
 import com.kade.pay.core.data.db.dao.WalletDao
+import com.kade.pay.core.data.db.entities.InvoiceEntity
 import com.kade.pay.core.data.db.entities.WalletEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
 @Database(
-    entities = [WalletEntity::class],
+    entities = [WalletEntity::class, InvoiceEntity::class],
     version = 1,
     exportSchema = true,
 )
 @ConstructedBy(DatabaseConstructor::class)
 abstract class Database : RoomDatabase() {
     abstract fun walletDao(): WalletDao
+
+    abstract fun invoiceDao(): InvoiceDao
 }
 
 @Suppress("NO_ACTUAL_FOR_EXPECT")
