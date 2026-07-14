@@ -12,6 +12,12 @@ interface WalletDao {
     @Insert(onConflict = REPLACE)
     suspend fun save(wallet: WalletEntity)
 
+    @Query("UPDATE wallets SET walletId = :walletId WHERE masterPubKey = :masterPubKey")
+    suspend fun updateWalletId(
+        masterPubKey: String,
+        walletId: String,
+    )
+
     @Query("SELECT * FROM wallets")
     suspend fun getAll(): List<WalletEntity>
 

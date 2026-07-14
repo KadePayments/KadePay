@@ -16,7 +16,7 @@ data class InvoiceEntity(
     val amount: Long,
     val address: String,
     val createdAt: Long,
-    val description: String,
+    val description: String?,
     val status: String,
     val childKeyIndex: Int,
 ) {
@@ -36,19 +36,23 @@ data class InvoiceEntity(
         )
 
     companion object {
-        fun fromInvoice(invoice: Invoice): InvoiceEntity =
-            InvoiceEntity(
-                requireNotNull(invoice.id),
+        fun fromInvoice(invoice: Invoice): InvoiceEntity {
+            val id = requireNotNull(invoice.id)
+            val address = requireNotNull(invoice.address)
+            val status = requireNotNull(invoice.status)
+            return InvoiceEntity(
+                id,
                 invoice.xPubKeyId,
                 invoice.chain,
                 invoice.network,
                 invoice.currencyCode,
                 invoice.amount,
-                requireNotNull(invoice.address),
+                address,
                 invoice.createdAt,
-                requireNotNull(invoice.description),
-                requireNotNull(invoice.status),
+                invoice.description,
+                status,
                 invoice.childKeyIndex,
             )
+        }
     }
 }

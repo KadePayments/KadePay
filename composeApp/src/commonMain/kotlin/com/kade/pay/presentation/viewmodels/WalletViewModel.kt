@@ -15,6 +15,8 @@ import com.kade.pay.core.data.storage.SecureStorage
 import com.kade.pay.core.wallet.Network
 import com.kade.pay.core.wallet.Wallet
 import com.kade.pay.network.Config
+import com.kade.pay.network.KadePayClient
+import com.kade.pay.network.KadePayClientImpl
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
@@ -25,7 +27,8 @@ class WalletViewModel(
         private set
     private val walletRepo: WalletRepo = WalletRepoImpl(dbBuilder)
     private val invoiceRepo: InvoiceRepo = InvoiceRepoImpl(dbBuilder)
-    private var wallet: Wallet? by mutableStateOf(null)
+    private var wallet: Wallet? = null
+    private var client: KadePayClient? = null
 
     fun onLoadWallets() {
         viewModelScope.launch {
@@ -36,7 +39,8 @@ class WalletViewModel(
                     if (isWalletAvailable) {
                         this@WalletViewModel.wallet = wallet
                         onLoadInvoices()
-                        state = state.copy(isLoading = false, isWalletAvailable = true)
+                        client = KadePayClientImpl(wallet.config)
+                        state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
                         return@launch
                     }
                     this@WalletViewModel.wallet = null
@@ -52,8 +56,13 @@ class WalletViewModel(
 
     fun onLoadInvoices() {
         viewModelScope.launch {
-            val invoices = invoiceRepo.getAll()
-            state = state.copy(invoices = invoices)
+            runCatching { invoiceRepo.getAll(wallet?.walletId!!) }
+                .onSuccess { invoices ->
+                    state = state.copy(invoices = invoices)
+                }.onFailure {
+                    if (it is CancellationException) throw it
+                    state = state.copy(errorMessage = "Failed to load invoices")
+                }
         }
     }
 
@@ -82,14 +91,22 @@ class WalletViewModel(
         }
         viewModelScope.launch {
             runCatching {
+                state = state.copy(isLoading = true)
                 wallet = Wallet.new(passphrase, mnemonics, secureStorage, state.config)
                 wallet?.let { walletRepo.save(it) }
+
+                client = KadePayClientImpl(wallet?.config!!)
+
+                val masterPubKey = requireNotNull(wallet?.masterPubKey)
+                val walletId = requireNotNull(client?.createWallet(masterPubKey))
+                wallet?.updateWalletId(walletId)
+                walletRepo.updateWalletId(masterPubKey, walletId)
             }.onSuccess {
-                state = state.copy(passphrase = null, isWalletAvailable = true, mnemonics = emptyList())
+                state = state.copy(isLoading = false, passphrase = null, isWalletAvailable = true, mnemonics = emptyList())
                 onSuccess()
             }.onFailure {
                 if (it is CancellationException) throw it
-                state = state.copy(errorMessage = "Failed to create wallet")
+                state = state.copy(isLoading = false, errorMessage = "Failed to create wallet")
             }
             return@launch
         }

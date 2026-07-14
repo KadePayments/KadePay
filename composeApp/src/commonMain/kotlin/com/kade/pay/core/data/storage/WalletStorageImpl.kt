@@ -13,6 +13,11 @@ class WalletStorageImpl(
 
     override suspend fun save(wallet: WalletEntity) = walletDao.save(wallet)
 
+    override suspend fun updateWalletId(
+        masterPubKey: String,
+        walletId: String,
+    ) = walletDao.updateWalletId(masterPubKey, walletId)
+
     override suspend fun getAll(): List<WalletEntity> = walletDao.getAll()
 
     override suspend fun delete(wallet: WalletEntity) = walletDao.delete(wallet)

@@ -10,11 +10,14 @@ import fr.acinq.bitcoin.MnemonicCode
 
 interface Wallet {
     val masterPubKey: String
+    val walletId: String?
     val descriptor: String
     val lastUsedIndex: Int
     val config: Config
 
     fun fingerprint(): String
+
+    fun updateWalletId(walletId: String)
 
     companion object {
         fun generateMnemonics(): List<String> {
