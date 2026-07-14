@@ -17,8 +17,8 @@ class InvoiceRepoImpl(
         invoiceStorage.save(entity)
     }
 
-    override suspend fun getAll(): List<Invoice> {
-        val entities = invoiceStorage.getAll()
+    override suspend fun getAll(walletId: String): List<Invoice> {
+        val entities = invoiceStorage.getAll(walletId)
         return entities.map { it.toInvoice() }
     }
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "509cbec1153e51053e084c98757d2054",
+    "identityHash": "26b7632ef3aaceefe601de236a80534a",
     "entities": [
       {
         "tableName": "wallets",
@@ -54,7 +54,7 @@
       },
       {
         "tableName": "invoices",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `xPubKeyId` TEXT NOT NULL, `chain` TEXT NOT NULL, `network` TEXT NOT NULL, `currencyCode` TEXT NOT NULL, `amount` INTEGER NOT NULL, `address` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `description` TEXT NOT NULL, `status` TEXT NOT NULL, `childKeyIndex` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `xPubKeyId` TEXT NOT NULL, `chain` TEXT NOT NULL, `network` TEXT NOT NULL, `currencyCode` TEXT NOT NULL, `amount` INTEGER NOT NULL, `address` TEXT NOT NULL, `createdAt` INTEGER NOT NULL, `description` TEXT, `status` TEXT NOT NULL, `childKeyIndex` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -107,8 +107,7 @@
           {
             "fieldPath": "description",
             "columnName": "description",
-            "affinity": "TEXT",
-            "notNull": true
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "status",
@@ -133,7 +132,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '509cbec1153e51053e084c98757d2054')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '26b7632ef3aaceefe601de236a80534a')"
     ]
   }
 }

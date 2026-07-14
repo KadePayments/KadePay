@@ -39,7 +39,6 @@ class WalletViewModel(
                     if (isWalletAvailable) {
                         this@WalletViewModel.wallet = wallet
                         onLoadInvoices()
-                        state = state.copy(isLoading = false, isWalletAvailable = true)
                         client = KadePayClientImpl(wallet.config)
                         state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
                         return@launch
@@ -57,7 +56,7 @@ class WalletViewModel(
 
     fun onLoadInvoices() {
         viewModelScope.launch {
-            runCatching { invoiceRepo.getAll() }
+            runCatching { invoiceRepo.getAll(wallet?.walletId!!) }
                 .onSuccess { invoices ->
                     state = state.copy(invoices = invoices)
                 }.onFailure {

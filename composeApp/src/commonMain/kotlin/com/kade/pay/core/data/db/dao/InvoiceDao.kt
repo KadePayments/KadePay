@@ -11,6 +11,6 @@ interface InvoiceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun save(invoice: InvoiceEntity)
 
-    @Query("SELECT * FROM invoices")
-    suspend fun getAll(): List<InvoiceEntity>
+    @Query("SELECT * FROM invoices WHERE xPubKeyId = :walletId")
+    suspend fun getAll(walletId: String): List<InvoiceEntity>
 }

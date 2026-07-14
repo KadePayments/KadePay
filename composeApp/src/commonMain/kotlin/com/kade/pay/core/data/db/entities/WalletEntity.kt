@@ -25,14 +25,16 @@ data class WalletEntity(
     }
 
     companion object {
-        fun fromWallet(wallet: Wallet): WalletEntity =
-            WalletEntity(
+        fun fromWallet(wallet: Wallet): WalletEntity {
+            val walletId = requireNotNull(wallet.walletId)
+            return WalletEntity(
                 wallet.masterPubKey,
-                wallet.walletId,
+                walletId,
                 wallet.descriptor,
                 wallet.lastUsedIndex,
                 wallet.config.network.name,
                 wallet.config.kadePayUrl,
             )
+        }
     }
 }
