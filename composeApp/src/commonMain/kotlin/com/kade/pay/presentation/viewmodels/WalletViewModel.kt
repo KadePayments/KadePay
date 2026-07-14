@@ -57,8 +57,13 @@ class WalletViewModel(
 
     fun onLoadInvoices() {
         viewModelScope.launch {
-            val invoices = invoiceRepo.getAll()
-            state = state.copy(invoices = invoices)
+            runCatching {
+                val invoices = invoiceRepo.getAll()
+                state = state.copy(invoices = invoices)
+            }.onFailure {
+                if (it is CancellationException) throw it
+                state = state.copy(errorMessage = "Failed to load invoices")
+            }
         }
     }
 
