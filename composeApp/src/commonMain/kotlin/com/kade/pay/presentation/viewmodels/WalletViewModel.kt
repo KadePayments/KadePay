@@ -93,6 +93,7 @@ class WalletViewModel(
             runCatching {
                 state = state.copy(isLoading = true)
                 wallet = Wallet.new(passphrase, mnemonics, secureStorage, state.config)
+
                 wallet?.let { walletRepo.save(it) }
 
                 client = KadePayClientImpl(wallet?.config!!)

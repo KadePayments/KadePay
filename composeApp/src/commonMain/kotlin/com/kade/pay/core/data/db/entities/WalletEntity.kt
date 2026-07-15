@@ -12,7 +12,7 @@ import com.kade.pay.network.Config
 data class WalletEntity(
     @PrimaryKey
     val masterPubKey: String,
-    val walletId: String,
+    val walletId: String?,
     val descriptor: String,
     val lastUsedIndex: Int,
     val network: String,
@@ -25,16 +25,14 @@ data class WalletEntity(
     }
 
     companion object {
-        fun fromWallet(wallet: Wallet): WalletEntity {
-            val walletId = requireNotNull(wallet.walletId)
-            return WalletEntity(
+        fun fromWallet(wallet: Wallet): WalletEntity =
+            WalletEntity(
                 wallet.masterPubKey,
-                walletId,
+                wallet.walletId,
                 wallet.descriptor,
                 wallet.lastUsedIndex,
                 wallet.config.network.name,
                 wallet.config.kadePayUrl,
             )
-        }
     }
 }
