@@ -12,7 +12,7 @@ class WalletImpl(
 
     override fun fingerprint(): String = descriptor.substringAfter("tr([").substringBefore("/")
 
-    override fun updateWalletId(walletId: String) {
+    override fun updateWalletId(walletId: String?) {
         this.walletId = walletId
     }
 }

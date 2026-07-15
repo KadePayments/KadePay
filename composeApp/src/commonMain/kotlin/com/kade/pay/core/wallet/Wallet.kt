@@ -17,7 +17,7 @@ interface Wallet {
 
     fun fingerprint(): String
 
-    fun updateWalletId(walletId: String)
+    fun updateWalletId(walletId: String?)
 
     companion object {
         fun generateMnemonics(): List<String> {
