@@ -84,7 +84,6 @@ class WalletViewModel(
                 invoiceRepo.save(newInvoices)
                 state = state.copy(invoices = invoices, utxos = utxos)
             }.onFailure {
-                println(it)
                 if (it is CancellationException) throw it
                 state = state.copy(errorMessage = "Failed to sync invoices")
             }
