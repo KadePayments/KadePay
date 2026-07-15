@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -186,7 +187,9 @@ fun WalletScreen(
                                     tint = MaterialTheme.colorScheme.primary,
                                 )
                             }*/
-                                Column {
+                                Column(
+                                    Modifier.weight(1f),
+                                ) {
                                     Text(
                                         utxo.address,
                                         color = MaterialTheme.colorScheme.onBackground,
@@ -200,10 +203,9 @@ fun WalletScreen(
                                         overflow = TextOverflow.Ellipsis,
                                     )
                                 }
-                                Spacer(Modifier.weight(1f))
                                 Text(
                                     "${BTC}${utxo.amount}",
-                                    Modifier.padding(start = 12.dp),
+                                    Modifier.padding(start = 12.dp).wrapContentWidth(),
                                     color = MaterialTheme.colorScheme.onBackground,
                                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                                     maxLines = 1,
