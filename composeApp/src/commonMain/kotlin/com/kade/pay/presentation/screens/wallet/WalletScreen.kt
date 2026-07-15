@@ -203,6 +203,7 @@ fun WalletScreen(
                                 Spacer(Modifier.weight(1f))
                                 Text(
                                     "${BTC}${utxo.amount}",
+                                    Modifier.padding(start = 12.dp),
                                     color = MaterialTheme.colorScheme.onBackground,
                                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                                     maxLines = 1,

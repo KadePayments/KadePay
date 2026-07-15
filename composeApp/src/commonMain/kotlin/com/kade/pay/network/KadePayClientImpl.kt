@@ -37,6 +37,8 @@ class KadePayClientImpl(
     override suspend fun getInvoices(walletId: String): List<Invoice> {
         val request = GetInvoicesRequest(walletId)
         val response = invoicesClient.GetInvoices().execute(request)
-        return response.invoices.map { Invoice.fromResponse(it) }
+        return response.invoices.map {
+            Invoice.fromResponse(it)
+        }
     }
 }

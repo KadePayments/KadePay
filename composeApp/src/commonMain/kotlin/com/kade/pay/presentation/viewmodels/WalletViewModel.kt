@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.RoomDatabase
 import com.kade.pay.core.data.db.Database
+import com.kade.pay.core.data.models.Utxo
 import com.kade.pay.core.data.repos.InvoiceRepo
 import com.kade.pay.core.data.repos.InvoiceRepoImpl
 import com.kade.pay.core.data.repos.WalletRepo
@@ -41,6 +42,7 @@ class WalletViewModel(
                         onLoadInvoices()
                         client = KadePayClientImpl(wallet.config)
                         state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
+                        onSyncInvoices()
                         return@launch
                     }
                     this@WalletViewModel.wallet = null
@@ -58,11 +60,34 @@ class WalletViewModel(
         viewModelScope.launch {
             runCatching { invoiceRepo.getAll(wallet?.walletId!!) }
                 .onSuccess { invoices ->
-                    state = state.copy(invoices = invoices)
+                    val utxos = invoices.map { invoice -> Utxo.fromInvoice(invoice) }
+                    state = state.copy(invoices = invoices, utxos = utxos)
                 }.onFailure {
                     if (it is CancellationException) throw it
                     state = state.copy(errorMessage = "Failed to load invoices")
                 }
+        }
+    }
+
+    fun onSyncInvoices() {
+        viewModelScope.launch {
+            runCatching {
+                val walletId = requireNotNull(wallet?.walletId)
+                requireNotNull(client).getInvoices(walletId)
+            }.onSuccess { invoices ->
+                val newInvoices =
+                    invoices.filter { invoice ->
+                        !state.invoices.contains(invoice)
+                    }
+
+                val utxos = invoices.map { invoice -> Utxo.fromInvoice(invoice) }
+                invoiceRepo.save(newInvoices)
+                state = state.copy(invoices = invoices, utxos = utxos)
+            }.onFailure {
+                println(it)
+                if (it is CancellationException) throw it
+                state = state.copy(errorMessage = "Failed to sync invoices")
+            }
         }
     }
 
