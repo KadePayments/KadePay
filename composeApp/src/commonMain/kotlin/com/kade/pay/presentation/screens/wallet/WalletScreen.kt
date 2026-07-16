@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kade.pay.core.data.models.BTC
 import com.kade.pay.core.data.storage.getSecureStorage
+import com.kade.pay.core.toBTCString
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
@@ -204,7 +205,7 @@ fun WalletScreen(
                                     )
                                 }
                                 Text(
-                                    "${BTC}${utxo.amount}",
+                                    "${BTC}${utxo.amount.toBTCString()}",
                                     Modifier.padding(start = 12.dp).wrapContentWidth(),
                                     color = MaterialTheme.colorScheme.onBackground,
                                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),

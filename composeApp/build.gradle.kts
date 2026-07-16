@@ -93,6 +93,8 @@ kotlin {
                 implementation(libs.square.wire.grpc.client)
 
                 implementation(libs.io.ktor.http)
+
+                implementation(libs.kotlin.bignum)
             }
             kotlin.srcDir(tasks.withType<WireTask>())
         }
