@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.RoomDatabase
 import com.kade.pay.core.data.db.Database
+import com.kade.pay.core.data.models.Utxo
 import com.kade.pay.core.data.repos.InvoiceRepo
 import com.kade.pay.core.data.repos.InvoiceRepoImpl
 import com.kade.pay.core.data.repos.WalletRepo
@@ -58,11 +59,34 @@ class WalletViewModel(
         viewModelScope.launch {
             runCatching { invoiceRepo.getAll(wallet?.walletId!!) }
                 .onSuccess { invoices ->
-                    state = state.copy(invoices = invoices)
+                    val utxos = invoices.map { invoice -> Utxo.fromInvoice(invoice) }
+                    state = state.copy(invoices = invoices, utxos = utxos)
+                    onSyncInvoices()
                 }.onFailure {
                     if (it is CancellationException) throw it
                     state = state.copy(errorMessage = "Failed to load invoices")
                 }
+        }
+    }
+
+    fun onSyncInvoices() {
+        viewModelScope.launch {
+            runCatching {
+                val walletId = requireNotNull(wallet?.walletId)
+                val invoices = requireNotNull(client).getInvoices(walletId)
+
+                val newInvoices = invoices.filter { invoice -> !state.invoices.contains(invoice) }
+                invoiceRepo.save(newInvoices)
+
+                val utxos = invoices.map { invoice -> Utxo.fromInvoice(invoice) }
+
+                invoices to utxos
+            }.onSuccess { (invoices, utxos) ->
+                state = state.copy(invoices = invoices, utxos = utxos)
+            }.onFailure {
+                if (it is CancellationException) throw it
+                state = state.copy(errorMessage = "Failed to sync invoices")
+            }
         }
     }
 

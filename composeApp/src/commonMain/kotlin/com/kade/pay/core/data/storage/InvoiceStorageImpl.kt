@@ -13,5 +13,7 @@ class InvoiceStorageImpl(
 
     override suspend fun save(invoice: InvoiceEntity) = invoiceDao.save(invoice)
 
+    override suspend fun save(invoices: List<InvoiceEntity>) = invoiceDao.save(invoices)
+
     override suspend fun getAll(walletId: String): List<InvoiceEntity> = invoiceDao.getAll(walletId)
 }
