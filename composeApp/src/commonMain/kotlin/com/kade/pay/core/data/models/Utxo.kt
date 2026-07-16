@@ -4,6 +4,7 @@ data class Utxo(
     val address: String,
     val amount: Long,
     val invoiceId: String,
+    val status: PaymentStatus,
 ) {
     companion object {
         fun fromInvoice(invoice: Invoice): Utxo =
@@ -11,6 +12,7 @@ data class Utxo(
                 address = requireNotNull(invoice.address),
                 amount = invoice.amount,
                 invoiceId = requireNotNull(invoice.id),
+                status = invoice.status,
             )
     }
 }

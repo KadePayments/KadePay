@@ -20,7 +20,11 @@
     <string name="confirm_mnemonic_code">Confirm your mnemonic code</string>
     <string name="continue_to_confirm">Continue</string>
     <string name="addresses">Addresses</string>
-    <string name="waiting_confirmation">Waiting confirmation</string>
+    <string name="waiting_confirmation">Awaiting confirmation</string>
+    <string name="waiting_payment">Awaiting payment</string>
+    <string name="confirmed">Payment confirmed</string>
+    <string name="unconfirmed">Payment unconfirmed</string>
+    <string name="cancelled">Payment cancelled</string>
     <string name="settings">Settings</string>
     <string name="server">Server</string>
     <string name="payment_settings">Configure Payments</string>

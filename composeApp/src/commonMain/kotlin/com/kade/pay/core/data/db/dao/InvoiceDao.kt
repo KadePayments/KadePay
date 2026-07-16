@@ -1,6 +1,7 @@
 package com.kade.pay.core.data.db.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -16,4 +17,7 @@ interface InvoiceDao {
 
     @Query("SELECT * FROM invoices WHERE xPubKeyId = :walletId")
     suspend fun getAll(walletId: String): List<InvoiceEntity>
+
+    @Delete
+    suspend fun deleteAll(invoices: List<InvoiceEntity>)
 }
