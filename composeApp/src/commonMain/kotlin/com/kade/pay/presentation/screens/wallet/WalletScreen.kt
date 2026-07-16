@@ -54,9 +54,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kade.pay.core.data.models.BTC
+import com.kade.pay.core.data.models.Chain
 import com.kade.pay.core.data.models.PaymentStatus
 import com.kade.pay.core.data.storage.getSecureStorage
 import com.kade.pay.core.toBTCString
+import com.kade.pay.presentation.screens.SelectedNavItem
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
@@ -85,10 +87,12 @@ import org.jetbrains.compose.resources.stringResource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WalletScreen(
+    selectedNavItem: SelectedNavItem,
     walletState: WalletState,
     onShowKeys: () -> Unit = {},
     onClearKeys: () -> Unit = {},
 ) {
+    val chain = Chain.fromNavItem(selectedNavItem)
     var showBalance by rememberSaveable { mutableStateOf(false) }
     val hiddenBalance =
         remember(walletState.balance) {
