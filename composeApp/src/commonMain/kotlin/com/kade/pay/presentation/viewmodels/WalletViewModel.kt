@@ -73,15 +73,15 @@ class WalletViewModel(
         viewModelScope.launch {
             runCatching {
                 val walletId = requireNotNull(wallet?.walletId)
-                requireNotNull(client).getInvoices(walletId)
-            }.onSuccess { invoices ->
-                val newInvoices =
-                    invoices.filter { invoice ->
-                        !state.invoices.contains(invoice)
-                    }
+                val invoices = requireNotNull(client).getInvoices(walletId)
+
+                val newInvoices = invoices.filter { invoice -> !state.invoices.contains(invoice) }
+                invoiceRepo.save(newInvoices)
 
                 val utxos = invoices.map { invoice -> Utxo.fromInvoice(invoice) }
-                invoiceRepo.save(newInvoices)
+
+                invoices to utxos
+            }.onSuccess { (invoices, utxos) ->
                 state = state.copy(invoices = invoices, utxos = utxos)
             }.onFailure {
                 if (it is CancellationException) throw it
