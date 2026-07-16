@@ -1,7 +1,6 @@
 package com.kade.pay.core
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 
@@ -17,10 +16,6 @@ fun validateUrl(url: String): Boolean =
         false
     }
 
-fun Long.toBTC(): BigDecimal {
-    val btc = this / 100_000_000F
-    val decimalMode = DecimalMode(8)
-    return BigDecimal.fromFloat(btc, decimalMode)
-}
+fun Long.toBTC(): BigDecimal = BigDecimal.fromLong(this).div(100_000_000)
 
 fun Long.toBTCString(): String = toBTC().toPlainString()
