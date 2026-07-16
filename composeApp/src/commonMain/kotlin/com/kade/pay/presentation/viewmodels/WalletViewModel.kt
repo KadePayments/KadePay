@@ -42,7 +42,6 @@ class WalletViewModel(
                         onLoadInvoices()
                         client = KadePayClientImpl(wallet.config)
                         state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
-                        onSyncInvoices()
                         return@launch
                     }
                     this@WalletViewModel.wallet = null
@@ -62,6 +61,7 @@ class WalletViewModel(
                 .onSuccess { invoices ->
                     val utxos = invoices.map { invoice -> Utxo.fromInvoice(invoice) }
                     state = state.copy(invoices = invoices, utxos = utxos)
+                    onSyncInvoices()
                 }.onFailure {
                     if (it is CancellationException) throw it
                     state = state.copy(errorMessage = "Failed to load invoices")
