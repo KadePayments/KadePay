@@ -4,8 +4,9 @@ enum class PaymentStatus {
     PENDING,
     PAID,
     CONFIRMED,
-    UNCONFIRMED,
+    EXPIRED,
     CANCELLED,
+    UNKNOWN,
     ;
 
     companion object {
@@ -14,9 +15,9 @@ enum class PaymentStatus {
                 "pending" -> PENDING
                 "paid" -> PAID
                 "confirmed" -> CONFIRMED
-                "unconfirmed" -> UNCONFIRMED
+                "unconfirmed" -> EXPIRED
                 "cancelled" -> CANCELLED
-                else -> throw IllegalArgumentException("Unknown payment status: $status")
+                else -> UNKNOWN
             }
     }
 }

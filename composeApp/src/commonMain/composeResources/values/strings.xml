@@ -23,8 +23,9 @@
     <string name="waiting_confirmation">Awaiting confirmation</string>
     <string name="waiting_payment">Awaiting payment</string>
     <string name="confirmed">Payment confirmed</string>
-    <string name="unconfirmed">Payment unconfirmed</string>
+    <string name="expired">Payment expired</string>
     <string name="cancelled">Payment cancelled</string>
+    <string name="unknown">Unknown</string>
     <string name="settings">Settings</string>
     <string name="server">Server</string>
     <string name="payment_settings">Configure Payments</string>
