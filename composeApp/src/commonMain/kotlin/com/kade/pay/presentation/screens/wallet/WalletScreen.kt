@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kade.pay.core.data.models.BTC
 import com.kade.pay.core.data.storage.getSecureStorage
+import com.kade.pay.core.toBTCString
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
@@ -73,10 +74,9 @@ fun WalletScreen(
     onClearKeys: () -> Unit = {},
 ) {
     var showBalance by rememberSaveable { mutableStateOf(false) }
-    val unit = "₿"
     val hiddenBalance =
         remember(walletState.balance) {
-            PasswordVisualTransformation().filter(AnnotatedString("$unit${walletState.balance}"))
+            PasswordVisualTransformation().filter(AnnotatedString("$BTC${walletState.balance.toBTCString()}"))
         }
     var showKeysView by rememberSaveable { mutableStateOf(false) }
 
@@ -86,7 +86,7 @@ fun WalletScreen(
         ) {
             Row(Modifier.padding(start = 64.dp, top = 128.dp)) {
                 Text(
-                    if (showBalance) "$unit${walletState.balance}" else hiddenBalance.text.text,
+                    if (showBalance) "$BTC${walletState.balance.toBTCString()}" else hiddenBalance.text.text,
                     color = MaterialTheme.colorScheme.onBackground,
                     style =
                         MaterialTheme.typography.headlineLarge
@@ -204,7 +204,7 @@ fun WalletScreen(
                                     )
                                 }
                                 Text(
-                                    "${BTC}${utxo.amount}",
+                                    "${BTC}${utxo.amount.toBTCString()}",
                                     Modifier.padding(start = 12.dp).wrapContentWidth(),
                                     color = MaterialTheme.colorScheme.onBackground,
                                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),

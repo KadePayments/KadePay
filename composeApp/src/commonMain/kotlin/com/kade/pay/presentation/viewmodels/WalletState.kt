@@ -6,7 +6,7 @@ import com.kade.pay.network.Config
 
 data class WalletState(
     val isLoading: Boolean = true,
-    val balance: Double = 00.00,
+    val balance: Long = 0L,
     val passphrase: String? = null,
     val mnemonics: List<String> = emptyList(),
     val pubKey: String? = null,

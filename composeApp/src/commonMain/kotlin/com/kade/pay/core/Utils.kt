@@ -1,5 +1,6 @@
 package com.kade.pay.core
 
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
 
@@ -14,3 +15,7 @@ fun validateUrl(url: String): Boolean =
     } catch (_: Exception) {
         false
     }
+
+fun Long.toBTC(): BigDecimal = BigDecimal.fromLong(this).div(100_000_000)
+
+fun Long.toBTCString(): String = toBTC().toPlainString()
