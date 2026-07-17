@@ -2,6 +2,7 @@ package com.kade.pay.core.data.db.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.kade.pay.core.data.models.Chain
 import com.kade.pay.core.data.models.Invoice
 import com.kade.pay.core.data.models.PaymentStatus
 import com.kade.pay.core.wallet.Network
@@ -25,7 +26,7 @@ data class InvoiceEntity(
         Invoice(
             id,
             xPubKeyId,
-            chain,
+            Chain.fromString(chain),
             network,
             currencyCode,
             amount,
@@ -44,7 +45,7 @@ data class InvoiceEntity(
             return InvoiceEntity(
                 id,
                 invoice.xPubKeyId,
-                invoice.chain,
+                invoice.chain.toString(),
                 invoice.network,
                 invoice.currencyCode,
                 invoice.amount,

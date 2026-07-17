@@ -7,6 +7,8 @@ enum class Chain {
     ARKADE,
     ;
 
+    override fun toString(): String = super.toString().lowercase()
+
     companion object {
         fun fromString(chain: String): Chain =
             when (chain.lowercase()) {

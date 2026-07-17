@@ -56,6 +56,8 @@ import androidx.compose.ui.unit.sp
 import com.kade.pay.core.data.models.BTC
 import com.kade.pay.core.data.models.Chain
 import com.kade.pay.core.data.models.PaymentStatus
+import com.kade.pay.core.data.models.filterByChain
+import com.kade.pay.core.data.models.sumOfConfirmedUtxos
 import com.kade.pay.core.data.storage.getSecureStorage
 import com.kade.pay.core.toBTCString
 import com.kade.pay.presentation.screens.SelectedNavItem
@@ -93,10 +95,13 @@ fun WalletScreen(
     onClearKeys: () -> Unit = {},
 ) {
     val chain = Chain.fromNavItem(selectedNavItem)
+    val utxos = walletState.utxos.filterByChain(chain)
+    val walletBalance = utxos.sumOfConfirmedUtxos()
+
     var showBalance by rememberSaveable { mutableStateOf(false) }
     val hiddenBalance =
-        remember(walletState.balance) {
-            PasswordVisualTransformation().filter(AnnotatedString("$BTC${walletState.balance.toBTCString()}"))
+        remember(walletBalance) {
+            PasswordVisualTransformation().filter(AnnotatedString("$BTC${walletBalance.toBTCString()}"))
         }
     var showKeysView by rememberSaveable { mutableStateOf(false) }
 
@@ -106,7 +111,7 @@ fun WalletScreen(
         ) {
             Row(Modifier.padding(start = 64.dp, top = 128.dp)) {
                 Text(
-                    if (showBalance) "$BTC${walletState.balance.toBTCString()}" else hiddenBalance.text.text,
+                    if (showBalance) "$BTC${walletBalance.toBTCString()}" else hiddenBalance.text.text,
                     color = MaterialTheme.colorScheme.onBackground,
                     style =
                         MaterialTheme.typography.headlineLarge
@@ -168,7 +173,7 @@ fun WalletScreen(
                     Text(stringResource(Res.string.send))
                 }
             }
-            if (walletState.utxos.isNotEmpty()) {
+            if (utxos.isNotEmpty()) {
                 Spacer(Modifier.height(16.dp))
                 LazyColumn(
                     Modifier
@@ -191,7 +196,7 @@ fun WalletScreen(
                                 .background(MaterialTheme.colorScheme.background),
                         )
                     }
-                    items(walletState.utxos) { utxo ->
+                    items(utxos) { utxo ->
                         Column(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 16.dp)) {
                             Row(
                                 Modifier.fillMaxWidth(),
@@ -407,7 +412,7 @@ fun WalletScreen(
 @Composable
 fun WalletScreenPreview() {
     KadePayTheme {
-        WalletScreen(WalletState())
+        WalletScreen(SelectedNavItem.Bitcoin, WalletState())
     }
 }
 
