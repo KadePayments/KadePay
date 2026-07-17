@@ -4,10 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.kade.pay.presentation.screens.SelectedNavItem
 import com.kade.pay.presentation.viewmodels.WalletViewModel
 
 @Composable
-fun MainWalletScreen(walletViewModel: WalletViewModel) {
+fun MainWalletScreen(
+    selectedNavItem: SelectedNavItem,
+    walletViewModel: WalletViewModel,
+) {
     val navController = rememberNavController()
     NavHost(navController, if (walletViewModel.state.isWalletAvailable) WALLET else NO_WALLET) {
         composable(NO_WALLET) {
@@ -56,6 +60,7 @@ fun MainWalletScreen(walletViewModel: WalletViewModel) {
         }
         composable(WALLET) {
             WalletScreen(
+                selectedNavItem,
                 walletViewModel.state,
                 onShowKeys = walletViewModel::onShowKeys,
                 onClearKeys = walletViewModel::onClearKeys,

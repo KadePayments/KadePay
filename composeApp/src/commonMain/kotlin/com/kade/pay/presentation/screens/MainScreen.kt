@@ -238,10 +238,10 @@ fun MainView(
 ) {
     when (selectedNavItem) {
         is SelectedNavItem.Bitcoin -> {
-            MainWalletScreen(walletViewModel)
+            MainWalletScreen(selectedNavItem, walletViewModel)
         }
         is SelectedNavItem.Arkade -> {
-            MainWalletScreen(walletViewModel)
+            MainWalletScreen(selectedNavItem, walletViewModel)
         }
         is SelectedNavItem.Invoices -> {}
         is SelectedNavItem.PayButton -> {}

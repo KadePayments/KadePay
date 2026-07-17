@@ -6,7 +6,7 @@ import kadepay.v1.services.invoice.InvoiceResponse
 data class Invoice(
     val id: String? = null,
     val xPubKeyId: String,
-    val chain: String,
+    val chain: Chain,
     val network: Network,
     val currencyCode: String,
     val amount: Long,
@@ -23,7 +23,7 @@ data class Invoice(
             return Invoice(
                 id = response.id,
                 xPubKeyId = response.x_pub_key_id,
-                chain = response.chain,
+                chain = Chain.fromString(response.chain),
                 network = Network.fromString(response.network),
                 currencyCode = response.currency_code,
                 amount = amount,

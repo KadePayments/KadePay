@@ -24,7 +24,7 @@ class KadePayClientImpl(
         val request =
             NewInvoiceRequest(
                 invoice.xPubKeyId,
-                invoice.chain,
+                invoice.chain.toString(),
                 invoice.network.name,
                 invoice.currencyCode,
                 invoice.amount.toString(),

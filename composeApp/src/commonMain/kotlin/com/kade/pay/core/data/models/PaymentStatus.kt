@@ -15,7 +15,7 @@ enum class PaymentStatus {
                 "pending" -> PENDING
                 "paid" -> PAID
                 "confirmed" -> CONFIRMED
-                "unconfirmed" -> EXPIRED
+                "expired" -> EXPIRED
                 "cancelled" -> CANCELLED
                 else -> UNKNOWN
             }
