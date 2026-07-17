@@ -94,9 +94,9 @@ fun WalletScreen(
     onShowKeys: () -> Unit = {},
     onClearKeys: () -> Unit = {},
 ) {
-    val chain = Chain.fromNavItem(selectedNavItem)
-    val utxos = walletState.utxos.filterByChain(chain)
-    val walletBalance = utxos.sumOfConfirmedUtxos()
+    val chain = remember(selectedNavItem) { Chain.fromNavItem(selectedNavItem) }
+    val utxos = remember(walletState.utxos) { walletState.utxos.filterByChain(chain) }
+    val walletBalance = remember(utxos) { utxos.sumOfConfirmedUtxos() }
 
     var showBalance by rememberSaveable { mutableStateOf(false) }
     val hiddenBalance =
