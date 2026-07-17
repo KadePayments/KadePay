@@ -3,6 +3,7 @@ package com.kade.pay.core.data.db.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kade.pay.core.data.models.Invoice
+import com.kade.pay.core.data.models.PaymentStatus
 import com.kade.pay.core.wallet.Network
 
 @Entity(tableName = "invoices")
@@ -31,7 +32,7 @@ data class InvoiceEntity(
             address,
             createdAt,
             description,
-            status,
+            PaymentStatus.fromString(status),
             childKeyIndex,
         )
 
@@ -50,7 +51,7 @@ data class InvoiceEntity(
                 address,
                 invoice.createdAt,
                 invoice.description,
-                status,
+                status.name.lowercase(),
                 invoice.childKeyIndex,
             )
         }

@@ -13,7 +13,7 @@ data class Invoice(
     val address: String? = null,
     val createdAt: Long,
     val description: String? = null,
-    val status: String? = null,
+    val status: PaymentStatus = PaymentStatus.PENDING,
     val childKeyIndex: Int,
 ) {
     companion object {
@@ -30,7 +30,7 @@ data class Invoice(
                 address = response.address,
                 createdAt = response.created_at,
                 description = response.description,
-                status = response.status,
+                status = PaymentStatus.fromString(response.status),
                 childKeyIndex = response.child_key_index,
             )
         }

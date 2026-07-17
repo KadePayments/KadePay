@@ -24,8 +24,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.PlainTooltip
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TooltipAnchorPosition
+import androidx.compose.material3.TooltipBox
+import androidx.compose.material3.TooltipDefaults
+import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
@@ -47,6 +54,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kade.pay.core.data.models.BTC
+import com.kade.pay.core.data.models.PaymentStatus
 import com.kade.pay.core.data.storage.getSecureStorage
 import com.kade.pay.core.toBTCString
 import com.kade.pay.presentation.theme.KadePayTheme
@@ -54,13 +62,21 @@ import com.kade.pay.presentation.viewmodels.WalletState
 import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.addresses
 import kadepay.composeapp.generated.resources.arrow_outward
+import kadepay.composeapp.generated.resources.cancelled
+import kadepay.composeapp.generated.resources.confirmed
+import kadepay.composeapp.generated.resources.expired
 import kadepay.composeapp.generated.resources.hide
+import kadepay.composeapp.generated.resources.info
 import kadepay.composeapp.generated.resources.passphrase
 import kadepay.composeapp.generated.resources.receive
+import kadepay.composeapp.generated.resources.schedule
 import kadepay.composeapp.generated.resources.send
 import kadepay.composeapp.generated.resources.show
+import kadepay.composeapp.generated.resources.unknown
 import kadepay.composeapp.generated.resources.visibility_off
 import kadepay.composeapp.generated.resources.visibility_on
+import kadepay.composeapp.generated.resources.waiting_confirmation
+import kadepay.composeapp.generated.resources.waiting_payment
 import kadepay.composeapp.generated.resources.wallet
 import kadepay.composeapp.generated.resources.your_keys
 import org.jetbrains.compose.resources.painterResource
@@ -177,16 +193,77 @@ fun WalletScreen(
                                 Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
                             ) {
-                                // UI here, to be determined by utxo confirmation and/or invoice status
-                                Checkbox(true, {}, Modifier.padding(0.dp))
-                                /*RadioButton(true, onClick = {})
-                            IconButton({}) {
-                                Icon(
-                                    painterResource(Res.drawable.schedule),
-                                    stringResource(Res.string.waiting_confirmation),
-                                    tint = MaterialTheme.colorScheme.primary,
-                                )
-                            }*/
+                                val toolTipState = rememberTooltipState()
+                                val tip = deriveToolTip(utxo.status)
+
+                                TooltipBox(
+                                    positionProvider =
+                                        TooltipDefaults.rememberTooltipPositionProvider(
+                                            TooltipAnchorPosition.Above,
+                                        ),
+                                    state = toolTipState,
+                                    tooltip = {
+                                        PlainTooltip {
+                                            Text(tip)
+                                        }
+                                    },
+                                ) {
+                                    when (utxo.status) {
+                                        PaymentStatus.PENDING -> {
+                                            RadioButton(
+                                                true,
+                                                onClick = {},
+                                                colors =
+                                                    RadioButtonDefaults.colors().copy(
+                                                        selectedColor = MaterialTheme.colorScheme.secondary,
+                                                    ),
+                                            )
+                                        }
+
+                                        PaymentStatus.PAID -> {
+                                            IconButton(onClick = {}) {
+                                                Icon(
+                                                    painterResource(Res.drawable.schedule),
+                                                    stringResource(Res.string.waiting_confirmation),
+                                                    tint = MaterialTheme.colorScheme.primary,
+                                                )
+                                            }
+                                        }
+
+                                        PaymentStatus.EXPIRED -> {
+                                            IconButton(onClick = {}) {
+                                                Icon(
+                                                    painterResource(Res.drawable.schedule),
+                                                    stringResource(Res.string.expired),
+                                                    tint = MaterialTheme.colorScheme.outlineVariant,
+                                                )
+                                            }
+                                        }
+
+                                        PaymentStatus.CONFIRMED -> {
+                                            Checkbox(true, {}, Modifier.padding(0.dp))
+                                        }
+
+                                        PaymentStatus.CANCELLED -> {
+                                            IconButton(onClick = {}) {
+                                                Icon(
+                                                    painterResource(Res.drawable.info),
+                                                    stringResource(Res.string.cancelled),
+                                                    tint = MaterialTheme.colorScheme.error,
+                                                )
+                                            }
+                                        }
+                                        PaymentStatus.UNKNOWN -> {
+                                            IconButton(onClick = {}) {
+                                                Icon(
+                                                    painterResource(Res.drawable.info),
+                                                    stringResource(Res.string.unknown),
+                                                    tint = MaterialTheme.colorScheme.outlineVariant,
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
                                 Column(
                                     Modifier.weight(1f),
                                 ) {
@@ -329,3 +406,14 @@ fun WalletScreenPreview() {
         WalletScreen(WalletState())
     }
 }
+
+@Composable
+fun deriveToolTip(status: PaymentStatus): String =
+    when (status) {
+        PaymentStatus.PENDING -> stringResource(Res.string.waiting_payment)
+        PaymentStatus.PAID -> stringResource(Res.string.waiting_confirmation)
+        PaymentStatus.EXPIRED -> stringResource(Res.string.expired)
+        PaymentStatus.CONFIRMED -> stringResource(Res.string.confirmed)
+        PaymentStatus.CANCELLED -> stringResource(Res.string.cancelled)
+        PaymentStatus.UNKNOWN -> stringResource(Res.string.unknown)
+    }
