@@ -243,7 +243,9 @@ fun MainView(
         is SelectedNavItem.Arkade -> {
             MainWalletScreen(selectedNavItem, walletViewModel)
         }
-        is SelectedNavItem.Invoices -> {}
+        is SelectedNavItem.Invoices -> {
+            InvoicesScreen(walletViewModel.state.invoices)
+        }
         is SelectedNavItem.PayButton -> {}
         is SelectedNavItem.PaymentSettings -> {
             PaymentSettingsScreen {}
