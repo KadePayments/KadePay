@@ -60,22 +60,27 @@ fun InvoicesScreen(invoices: List<Invoice>) {
                 .padding(start = 64.dp, end = 64.dp, top = 16.dp, bottom = 16.dp),
         ) {
             stickyHeader {
-                Text(
-                    stringResource(Res.string.invoices),
-                    Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background),
-                    color = MaterialTheme.colorScheme.onBackground,
-                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                )
-                Spacer(
-                    Modifier
-                        .height(16.dp)
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.background),
-                )
+                Column {
+                    Text(
+                        stringResource(Res.string.invoices),
+                        Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background),
+                        color = MaterialTheme.colorScheme.onBackground,
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    )
+                    Spacer(
+                        Modifier
+                            .height(16.dp)
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background),
+                    )
+                }
             }
-            items(invoices) { invoice ->
+            items(
+                invoices,
+                key = { invoice -> invoice.id ?: invoice.hashCode() },
+            ) { invoice ->
                 Column(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 16.dp)) {
                     Row(
                         Modifier.fillMaxWidth(),
