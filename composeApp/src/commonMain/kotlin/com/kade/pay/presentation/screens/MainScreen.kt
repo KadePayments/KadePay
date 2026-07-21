@@ -244,6 +244,10 @@ fun MainView(
             MainWalletScreen(selectedNavItem, walletViewModel)
         }
         is SelectedNavItem.Invoices -> {
+            if (walletViewModel.state.invoices.isEmpty()) {
+                EmptyInvoices()
+                return
+            }
             InvoicesScreen(walletViewModel.state.invoices)
         }
         is SelectedNavItem.PayButton -> {}
