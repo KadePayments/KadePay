@@ -160,21 +160,21 @@ fun InvoicesScreen(invoices: List<Invoice>) {
                         Column(
                             Modifier.weight(1f),
                         ) {
-                            invoice.address?.let {
+                            if (invoice.address != null && invoice.id != null) {
                                 Text(
-                                    it,
+                                    invoice.address,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                )
+                                Spacer(Modifier.height(8.dp))
+                                Text(
+                                    "Id: ${invoice.id}",
                                     color = MaterialTheme.colorScheme.onBackground,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                 )
                             }
-                            Spacer(Modifier.height(8.dp))
-                            Text(
-                                "Id: ${invoice.id}",
-                                color = MaterialTheme.colorScheme.onBackground,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                            )
                         }
                         Text(
                             "${BTC}${invoice.amount.toBTCString()}",
