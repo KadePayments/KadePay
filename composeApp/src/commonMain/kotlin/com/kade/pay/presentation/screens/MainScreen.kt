@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.kade.pay.core.data.db.getDatabaseBuilder
+import com.kade.pay.presentation.screens.invoices.MainInvoicesScreen
 import com.kade.pay.presentation.screens.wallet.MainWalletScreen
 import com.kade.pay.presentation.theme.KadePayTheme
 import com.kade.pay.presentation.theme.arkadeIconColor
@@ -244,11 +245,7 @@ fun MainView(
             MainWalletScreen(selectedNavItem, walletViewModel)
         }
         is SelectedNavItem.Invoices -> {
-            if (walletViewModel.state.invoices.isEmpty()) {
-                EmptyInvoices()
-                return
-            }
-            InvoicesScreen(walletViewModel.state.invoices)
+            MainInvoicesScreen(walletViewModel.state)
         }
         is SelectedNavItem.PayButton -> {}
         is SelectedNavItem.PaymentSettings -> {

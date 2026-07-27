@@ -11,4 +11,5 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.googleProtobuf) apply false
     alias(libs.plugins.squareWire) apply false
+    alias(libs.plugins.kotlinSerialization) apply false
 }

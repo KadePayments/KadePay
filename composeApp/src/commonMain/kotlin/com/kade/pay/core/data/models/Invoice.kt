@@ -2,7 +2,9 @@ package com.kade.pay.core.data.models
 
 import com.kade.pay.core.wallet.Network
 import kadepay.v1.services.invoice.InvoiceResponse
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Invoice(
     val id: String? = null,
     val xPubKeyId: String,
