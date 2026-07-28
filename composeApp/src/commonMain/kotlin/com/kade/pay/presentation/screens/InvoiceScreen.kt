@@ -114,7 +114,7 @@ fun InvoiceScreen(
                 var qrCodeImage by remember { mutableStateOf<ImageBitmap?>(null) }
                 val qrCodeColor = MaterialTheme.colorScheme.onPrimaryContainer.toArgb()
 
-                LaunchedEffect(invoice.id) {
+                LaunchedEffect(invoice.address, qrCodeColor) {
                     if (invoice.address != null) {
                         qrCodeImage = generateQRCode(invoice.address, qrCodeColor, logo.getBytes(), logo.width)
                     }
