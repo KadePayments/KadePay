@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidxRoom)
     alias(libs.plugins.squareWire)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 val currentOs: String = System.getProperty("os.name").lowercase()
@@ -95,6 +96,10 @@ kotlin {
                 implementation(libs.io.ktor.http)
 
                 implementation(libs.kotlin.bignum)
+
+                implementation(libs.kotlin.datetime)
+
+                implementation(libs.kotlin.g0dkar.qr)
             }
             kotlin.srcDir(tasks.withType<WireTask>())
         }
