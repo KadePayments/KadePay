@@ -46,6 +46,8 @@ import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.arkade
 import kadepay.composeapp.generated.resources.arrow_back
 import kadepay.composeapp.generated.resources.back
+import kadepay.composeapp.generated.resources.btc_logo
+import kadepay.composeapp.generated.resources.chain
 import kadepay.composeapp.generated.resources.kade
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -80,8 +82,13 @@ fun InvoiceScreen(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Image(
-                        painterResource(Res.drawable.arkade),
-                        stringResource(Res.string.back),
+                        painterResource(
+                            when (invoice.chain) {
+                                Chain.ARKADE -> Res.drawable.arkade
+                                Chain.BITCOIN -> Res.drawable.btc_logo
+                            },
+                        ),
+                        stringResource(Res.string.chain),
                     )
                     Column(Modifier.padding(start = 12.dp)) {
                         Text(

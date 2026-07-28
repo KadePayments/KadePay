@@ -40,4 +40,5 @@
     <string name="network">Network</string>
     <string name="edit_server_url">Edit server url</string>
     <string name="no_invoices">No invoices available</string>
+    <string name="chain">Chain</string>
 </resources>
