@@ -1,5 +1,7 @@
 package com.kade.pay.core
 
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.decodeToImageBitmap
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
@@ -7,6 +9,7 @@ import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
+import qrcode.QRCode
 import kotlin.time.Instant
 
 expect fun secureRandom(): ByteArray
@@ -43,4 +46,13 @@ fun Long.toDateTimeString(): String {
             second()
         }
     return formatter.format(localDateTime)
+}
+
+fun generateQRCode(data: String): ImageBitmap {
+    val qrCode =
+        QRCode
+            .ofCircles()
+            .withSize(12)
+            .build(data)
+    return qrCode.renderToBytes().decodeToImageBitmap()
 }

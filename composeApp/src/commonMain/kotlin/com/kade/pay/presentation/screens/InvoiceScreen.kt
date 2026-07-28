@@ -2,6 +2,7 @@ package com.kade.pay.presentation.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,12 +10,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -23,6 +26,7 @@ import com.kade.pay.core.data.models.BTC
 import com.kade.pay.core.data.models.Chain
 import com.kade.pay.core.data.models.Invoice
 import com.kade.pay.core.data.models.PaymentStatus
+import com.kade.pay.core.generateQRCode
 import com.kade.pay.core.toBTCString
 import com.kade.pay.core.toDateTimeString
 import com.kade.pay.core.wallet.Network
@@ -53,10 +57,12 @@ fun InvoiceScreen(
         }
 
         Card(
-            Modifier.align(Alignment.Center).padding(start = 16.dp, end = 16.dp),
+            Modifier.wrapContentWidth().align(Alignment.Center).padding(start = 16.dp, end = 16.dp),
             border = BorderStroke(2.dp, MaterialTheme.colorScheme.outline),
         ) {
-            Column {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 Row(
                     Modifier.padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -74,7 +80,20 @@ fun InvoiceScreen(
                     PaymentStatusView(invoice.status)
                 }
 
-                Column(Modifier.padding(start = 16.dp)) {
+                if (invoice.address != null) {
+                    val qrCodeImage =
+                        remember(invoice.id) {
+                            generateQRCode(invoice.address)
+                        }
+
+                    Image(
+                        qrCodeImage,
+                        "QR Code",
+                        Modifier.background(MaterialTheme.colorScheme.secondary).fillMaxWidth(),
+                    )
+                }
+
+                Column(Modifier.padding(start = 16.dp).align(Alignment.Start)) {
                     Text("Invoice Id: ${invoice.id}")
                     Text("TxId: Waiting for confirmation (1/6)")
 

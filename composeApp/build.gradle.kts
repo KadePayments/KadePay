@@ -98,6 +98,8 @@ kotlin {
                 implementation(libs.kotlin.bignum)
 
                 implementation(libs.kotlin.datetime)
+
+                implementation(libs.kotlin.g0dkar.qr)
             }
             kotlin.srcDir(tasks.withType<WireTask>())
         }
