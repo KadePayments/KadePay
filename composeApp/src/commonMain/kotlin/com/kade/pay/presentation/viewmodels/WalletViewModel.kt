@@ -34,24 +34,25 @@ class WalletViewModel(
     fun onLoadWallets() {
         viewModelScope.launch {
             state = state.copy(isLoading = true)
-            runCatching { walletRepo.getAll().firstOrNull() }
-                .onSuccess { wallet ->
-                    val isWalletAvailable = wallet != null
-                    if (isWalletAvailable) {
-                        this@WalletViewModel.wallet = wallet
-                        onLoadInvoices()
-                        client = KadePayClientImpl(wallet.config)
-                        state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
-                        return@launch
-                    }
-                    this@WalletViewModel.wallet = null
-                    clearMnemonics()
-                    state = state.copy(isLoading = false, isWalletAvailable = false)
-                }.onFailure {
-                    if (it is CancellationException) throw it
-                    wallet = null
-                    state = state.copy(isLoading = false, isWalletAvailable = false, errorMessage = "Failed to load wallet")
+            runCatching {
+                walletRepo.getAll().firstOrNull()
+            }.onSuccess { wallet ->
+                val isWalletAvailable = wallet != null
+                if (isWalletAvailable) {
+                    this@WalletViewModel.wallet = wallet
+                    onLoadInvoices()
+                    client = KadePayClientImpl(wallet.config)
+                    state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
+                    return@launch
                 }
+                this@WalletViewModel.wallet = null
+                clearMnemonics()
+                state = state.copy(isLoading = false, isWalletAvailable = false)
+            }.onFailure {
+                if (it is CancellationException) throw it
+                wallet = null
+                state = state.copy(isLoading = false, isWalletAvailable = false, errorMessage = "Failed to load wallet")
+            }
         }
     }
 

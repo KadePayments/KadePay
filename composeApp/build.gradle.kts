@@ -100,6 +100,8 @@ kotlin {
                 implementation(libs.kotlin.datetime)
 
                 implementation(libs.kotlin.g0dkar.qr)
+
+                implementation(libs.kotlinx.serialization)
             }
             kotlin.srcDir(tasks.withType<WireTask>())
         }
