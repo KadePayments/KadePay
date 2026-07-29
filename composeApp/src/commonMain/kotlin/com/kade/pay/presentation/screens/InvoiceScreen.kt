@@ -107,7 +107,7 @@ fun InvoiceScreen(
                     }
 
                     Spacer(Modifier.fillMaxWidth().weight(1f))
-                    PaymentStatusView(invoice.status)
+                    PaymentStatusView(invoice.status, true)
                 }
 
                 val logo = vectorResource(Res.drawable.kade).getImageBitmap()

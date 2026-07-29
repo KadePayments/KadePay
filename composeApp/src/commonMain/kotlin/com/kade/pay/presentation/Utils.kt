@@ -48,3 +48,8 @@ fun verifyPassphrase(
     val passphraseHash = sha256(passphrase.encodeToByteArray()).toHexString()
     return passphraseHash == knownHash
 }
+
+fun String.toUpperCaseFirstLetter(): String =
+    this.lowercase().replaceFirstChar {
+        it.titlecase()
+    }
