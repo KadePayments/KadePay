@@ -76,7 +76,6 @@ class WalletViewModel(
                 val invoices = requireNotNull(client).getInvoices(walletId)
 
                 val newInvoices = invoices.filter { invoice -> !state.invoices.contains(invoice) }
-                println(newInvoices)
                 invoiceRepo.save(newInvoices)
 
                 val utxos = invoices.map { invoice -> Utxo.fromInvoice(invoice) }

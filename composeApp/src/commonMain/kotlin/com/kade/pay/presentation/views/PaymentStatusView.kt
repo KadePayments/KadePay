@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.kade.pay.core.data.models.PaymentStatus
 import com.kade.pay.presentation.screens.wallet.deriveToolTip
 import com.kade.pay.presentation.theme.KadePayTheme
+import com.kade.pay.presentation.toUpperCaseFirstLetter
 import kadepay.composeapp.generated.resources.Res
 import kadepay.composeapp.generated.resources.done
 import kadepay.composeapp.generated.resources.info
@@ -83,12 +84,13 @@ private fun StatusView(
     Row(
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        val statusText = status.toString().toUpperCaseFirstLetter()
         if (showText) {
-            Text(status.toString())
+            Text(statusText)
         }
         Icon(
             painterResource(icon),
-            status.toString(),
+            if (showText) null else statusText,
             Modifier.padding(12.dp),
             tint = color,
         )
