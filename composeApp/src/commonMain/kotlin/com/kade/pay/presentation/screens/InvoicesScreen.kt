@@ -13,15 +13,10 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltip
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipAnchorPosition
 import androidx.compose.material3.TooltipBox
@@ -37,19 +32,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.kade.pay.core.data.models.BTC
 import com.kade.pay.core.data.models.Invoice
-import com.kade.pay.core.data.models.PaymentStatus
 import com.kade.pay.core.toBTCString
 import com.kade.pay.presentation.screens.wallet.deriveToolTip
 import com.kade.pay.presentation.theme.KadePayTheme
+import com.kade.pay.presentation.views.PaymentStatusView
 import kadepay.composeapp.generated.resources.Res
-import kadepay.composeapp.generated.resources.cancelled
-import kadepay.composeapp.generated.resources.expired
-import kadepay.composeapp.generated.resources.info
 import kadepay.composeapp.generated.resources.invoices
-import kadepay.composeapp.generated.resources.schedule
-import kadepay.composeapp.generated.resources.unknown
-import kadepay.composeapp.generated.resources.waiting_confirmation
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -115,61 +103,7 @@ fun InvoicesScreen(
                                 }
                             },
                         ) {
-                            when (invoice.status) {
-                                PaymentStatus.PENDING -> {
-                                    RadioButton(
-                                        true,
-                                        onClick = {},
-                                        colors =
-                                            RadioButtonDefaults.colors().copy(
-                                                selectedColor = MaterialTheme.colorScheme.secondary,
-                                            ),
-                                    )
-                                }
-
-                                PaymentStatus.PAID -> {
-                                    IconButton(onClick = {}) {
-                                        Icon(
-                                            painterResource(Res.drawable.schedule),
-                                            stringResource(Res.string.waiting_confirmation),
-                                            tint = MaterialTheme.colorScheme.primary,
-                                        )
-                                    }
-                                }
-
-                                PaymentStatus.EXPIRED -> {
-                                    IconButton(onClick = {}) {
-                                        Icon(
-                                            painterResource(Res.drawable.schedule),
-                                            stringResource(Res.string.expired),
-                                            tint = MaterialTheme.colorScheme.outlineVariant,
-                                        )
-                                    }
-                                }
-
-                                PaymentStatus.CONFIRMED -> {
-                                    Checkbox(true, {}, Modifier.padding(0.dp))
-                                }
-
-                                PaymentStatus.CANCELLED -> {
-                                    IconButton(onClick = {}) {
-                                        Icon(
-                                            painterResource(Res.drawable.info),
-                                            stringResource(Res.string.cancelled),
-                                            tint = MaterialTheme.colorScheme.error,
-                                        )
-                                    }
-                                }
-                                PaymentStatus.UNKNOWN -> {
-                                    IconButton(onClick = {}) {
-                                        Icon(
-                                            painterResource(Res.drawable.info),
-                                            stringResource(Res.string.unknown),
-                                            tint = MaterialTheme.colorScheme.outlineVariant,
-                                        )
-                                    }
-                                }
-                            }
+                            PaymentStatusView(invoice.status)
                         }
                         Column(
                             Modifier.weight(1f),

@@ -12,6 +12,7 @@ import androidx.compose.material3.TooltipBox
 import androidx.compose.material3.TooltipDefaults
 import androidx.compose.material3.rememberTooltipState
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,7 +30,10 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentStatusView(status: PaymentStatus) {
+fun PaymentStatusView(
+    status: PaymentStatus,
+    showText: Boolean = false,
+) {
     val toolTipState = rememberTooltipState()
     val tip = deriveToolTip(status)
 
@@ -47,23 +51,23 @@ fun PaymentStatusView(status: PaymentStatus) {
     ) {
         when (status) {
             PaymentStatus.PENDING -> {
-                StatusView(status, Res.drawable.pending, MaterialTheme.colorScheme.errorContainer)
+                StatusView(status, Res.drawable.pending, MaterialTheme.colorScheme.errorContainer, showText)
             }
             PaymentStatus.PAID -> {
-                StatusView(status, Res.drawable.schedule, MaterialTheme.colorScheme.primary)
+                StatusView(status, Res.drawable.schedule, MaterialTheme.colorScheme.primary, showText)
             }
             PaymentStatus.CONFIRMED -> {
-                StatusView(status, Res.drawable.done, MaterialTheme.colorScheme.primary)
+                StatusView(status, Res.drawable.done, MaterialTheme.colorScheme.primary, showText)
             }
             PaymentStatus.EXPIRED -> {
-                StatusView(status, Res.drawable.schedule, MaterialTheme.colorScheme.outlineVariant)
+                StatusView(status, Res.drawable.schedule, MaterialTheme.colorScheme.outlineVariant, showText)
             }
             PaymentStatus.CANCELLED -> {
-                StatusView(status, Res.drawable.info, MaterialTheme.colorScheme.error)
+                StatusView(status, Res.drawable.info, MaterialTheme.colorScheme.error, showText)
             }
 
             PaymentStatus.UNKNOWN -> {
-                StatusView(status, Res.drawable.info, MaterialTheme.colorScheme.outlineVariant)
+                StatusView(status, Res.drawable.info, MaterialTheme.colorScheme.outlineVariant, showText)
             }
         }
     }
@@ -74,12 +78,18 @@ private fun StatusView(
     status: PaymentStatus,
     icon: DrawableResource,
     color: Color,
+    showText: Boolean,
 ) {
-    Row {
-        Text(status.toString(), Modifier.padding(end = 8.dp))
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (showText) {
+            Text(status.toString())
+        }
         Icon(
             painterResource(icon),
             status.toString(),
+            Modifier.padding(12.dp),
             tint = color,
         )
     }
