@@ -6,6 +6,7 @@ import kadepay.v1.services.invoice.GrpcInvoiceServiceClient
 import kadepay.v1.services.invoice.NewInvoiceRequest
 import kadepay.v1.services.wallet.GrpcWalletServiceClient
 import kadepay.v1.services.wallet.NewWalletRequest
+import kadepay.v1.services.wallet.WalletIdRequest
 
 class KadePayClientImpl(
     config: Config,
@@ -18,6 +19,12 @@ class KadePayClientImpl(
         val request = NewWalletRequest(masterPubKey)
         val response = walletClient.CreateWallet().execute(request)
         return response.x_pub_key_id
+    }
+
+    override suspend fun getWalletId(pubKey: String): String {
+        val request = WalletIdRequest(pubKey)
+        val response = walletClient.GetWalletId().execute(request)
+        return response.wallet_id
     }
 
     override suspend fun createInvoice(invoice: Invoice): Invoice {
