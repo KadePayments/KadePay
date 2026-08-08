@@ -39,8 +39,13 @@ class WalletViewModel(
                     val isWalletAvailable = wallet != null
                     if (isWalletAvailable) {
                         this@WalletViewModel.wallet = wallet
-                        onLoadInvoices()
                         client = KadePayClientImpl(wallet.config)
+                        if (wallet.walletId == null) {
+                            val id = client?.getWalletId(wallet.masterPubKey)
+                            wallet.updateWalletId(id)
+                            walletRepo.updateWalletId(wallet.masterPubKey, id!!)
+                        }
+                        onLoadInvoices()
                         state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
                         return@launch
                     }
