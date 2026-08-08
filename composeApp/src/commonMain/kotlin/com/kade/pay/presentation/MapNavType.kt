@@ -32,8 +32,8 @@ object MapNavType : NavType<Map<String, String>>(false) {
         }
 
     override fun parseValue(value: String): Map<String, String> =
-        value.split(",").associate { item ->
-            val (itemKey, value) = item.trim().split(":")
-            itemKey to value
+        value.removeSurrounding("{", "}").split(",").associate { item ->
+            val (itemKey, value) = item.trim().split("=")
+            itemKey to value.trim()
         }
 }
