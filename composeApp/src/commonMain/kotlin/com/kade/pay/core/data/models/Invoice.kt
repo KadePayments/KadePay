@@ -23,11 +23,6 @@ data class Invoice(
         fun fromResponse(response: InvoiceResponse): Invoice {
             val amount = response.amount.toLongOrNull()
             requireNotNull(amount) { "Invalid invoice amount" }
-            val metadata =
-                response.metadata.associate {
-                    val entry = it.split(":")
-                    entry[0] to entry[1]
-                }
             return Invoice(
                 id = response.id,
                 xPubKeyId = response.x_pub_key_id,
@@ -40,7 +35,7 @@ data class Invoice(
                 description = response.description,
                 status = PaymentStatus.fromString(response.status),
                 childKeyIndex = response.child_key_index,
-                metadata = metadata,
+                metadata = response.metadata,
             )
         }
     }

@@ -4,36 +4,19 @@ import androidx.navigation.NavType
 import androidx.savedstate.SavedState
 import androidx.savedstate.read
 import androidx.savedstate.write
+import kotlinx.serialization.json.Json
 
 object MapNavType : NavType<Map<String, String>>(false) {
     override fun put(
         bundle: SavedState,
         key: String,
         value: Map<String, String>,
-    ) {
-        bundle.write {
-            val stringList =
-                value.map { entry ->
-                    "${entry.key}:${entry.value}"
-                }
-            putStringList(key, stringList)
-        }
-    }
+    ) = bundle.write { putString(key, Json.encodeToString(value)) }
 
     override fun get(
         bundle: SavedState,
         key: String,
-    ): Map<String, String> =
-        bundle.read {
-            getStringList(key).associate { item ->
-                val (itemKey, value) = item.trim().split(":")
-                itemKey to value
-            }
-        }
+    ): Map<String, String> = bundle.read { Json.decodeFromString(getString(key)) }
 
-    override fun parseValue(value: String): Map<String, String> =
-        value.removeSurrounding("{", "}").split(",").associate { item ->
-            val (itemKey, value) = item.trim().split("=")
-            itemKey to value.trim()
-        }
+    override fun parseValue(value: String): Map<String, String> = Json.decodeFromString(value)
 }
