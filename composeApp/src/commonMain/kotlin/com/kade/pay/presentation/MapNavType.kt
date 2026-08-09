@@ -19,4 +19,6 @@ object MapNavType : NavType<Map<String, String>>(false) {
     ): Map<String, String> = bundle.read { Json.decodeFromString(getString(key)) }
 
     override fun parseValue(value: String): Map<String, String> = Json.decodeFromString(value)
+
+    override fun serializeAsValue(value: Map<String, String>): String = Json.encodeToString(value)
 }
