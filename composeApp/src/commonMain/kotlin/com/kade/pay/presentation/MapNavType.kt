@@ -20,5 +20,9 @@ object MapNavType : NavType<Map<String, String>>(false) {
 
     override fun parseValue(value: String): Map<String, String> = Json.decodeFromString(value)
 
-    override fun serializeAsValue(value: Map<String, String>): String = Json.encodeToString(value)
+    override fun serializeAsValue(value: Map<String, String>): String =
+        value
+            .map {
+                "${it.key}=${it.value}"
+            }.joinToString("&")
 }
