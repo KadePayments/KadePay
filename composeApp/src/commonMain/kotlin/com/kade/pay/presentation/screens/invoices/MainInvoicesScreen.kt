@@ -10,6 +10,7 @@ import com.kade.pay.core.data.models.Chain
 import com.kade.pay.core.data.models.Invoice
 import com.kade.pay.core.data.models.PaymentStatus
 import com.kade.pay.core.wallet.Network
+import com.kade.pay.presentation.MapNavType
 import com.kade.pay.presentation.screens.EmptyInvoices
 import com.kade.pay.presentation.screens.InvoiceScreen
 import com.kade.pay.presentation.screens.InvoicesScreen
@@ -36,6 +37,7 @@ fun MainInvoicesScreen(state: WalletState) {
                     typeOf<Chain>() to Chain.NavType,
                     typeOf<Network>() to Network.NavType,
                     typeOf<PaymentStatus>() to PaymentStatus.NavType,
+                    typeOf<Map<String, String>>() to MapNavType,
                 ),
         ) {
             val invoice = it.toRoute<Invoice>()

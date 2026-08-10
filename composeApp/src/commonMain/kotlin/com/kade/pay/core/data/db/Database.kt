@@ -5,6 +5,7 @@ import androidx.room.ConstructedBy
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
+import androidx.room.TypeConverters
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import com.kade.pay.core.data.db.dao.InvoiceDao
 import com.kade.pay.core.data.db.dao.WalletDao
@@ -19,6 +20,7 @@ import kotlinx.coroutines.IO
     exportSchema = true,
 )
 @ConstructedBy(DatabaseConstructor::class)
+@TypeConverters(MapStringConverter::class)
 abstract class Database : RoomDatabase() {
     abstract fun walletDao(): WalletDao
 

@@ -34,29 +34,31 @@ class WalletViewModel(
     fun onLoadWallets() {
         viewModelScope.launch {
             state = state.copy(isLoading = true)
-            runCatching { walletRepo.getAll().firstOrNull() }
-                .onSuccess { wallet ->
-                    val isWalletAvailable = wallet != null
-                    if (isWalletAvailable) {
-                        this@WalletViewModel.wallet = wallet
-                        client = KadePayClientImpl(wallet.config)
-                        if (wallet.walletId == null) {
-                            val id = client?.getWalletId(wallet.masterPubKey)
-                            wallet.updateWalletId(id)
-                            walletRepo.updateWalletId(wallet.masterPubKey, id!!)
-                        }
-                        onLoadInvoices()
-                        state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
-                        return@launch
+            runCatching {
+                walletRepo.getAll().firstOrNull()
+            }.onSuccess { wallet ->
+                val isWalletAvailable = wallet != null
+                if (isWalletAvailable) {
+                    this@WalletViewModel.wallet = wallet
+
+                    client = KadePayClientImpl(wallet.config)
+                    if (wallet.walletId == null) {
+                        val id = client?.getWalletId(wallet.masterPubKey)
+                        wallet.updateWalletId(id)
+                        walletRepo.updateWalletId(wallet.masterPubKey, id!!)
                     }
-                    this@WalletViewModel.wallet = null
-                    clearMnemonics()
-                    state = state.copy(isLoading = false, isWalletAvailable = false)
-                }.onFailure {
-                    if (it is CancellationException) throw it
-                    wallet = null
-                    state = state.copy(isLoading = false, isWalletAvailable = false, errorMessage = "Failed to load wallet")
+                    onLoadInvoices()
+                    state = state.copy(isLoading = false, isWalletAvailable = true, config = wallet.config)
+                    return@launch
                 }
+                this@WalletViewModel.wallet = null
+                clearMnemonics()
+                state = state.copy(isLoading = false, isWalletAvailable = false)
+            }.onFailure {
+                if (it is CancellationException) throw it
+                wallet = null
+                state = state.copy(isLoading = false, isWalletAvailable = false, errorMessage = "Failed to load wallet")
+            }
         }
     }
 

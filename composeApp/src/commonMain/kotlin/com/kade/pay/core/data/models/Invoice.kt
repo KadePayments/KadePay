@@ -17,6 +17,7 @@ data class Invoice(
     val description: String? = null,
     val status: PaymentStatus = PaymentStatus.PENDING,
     val childKeyIndex: Int,
+    val metadata: Map<String, String> = emptyMap(),
 ) {
     companion object {
         fun fromResponse(response: InvoiceResponse): Invoice {
@@ -34,6 +35,7 @@ data class Invoice(
                 description = response.description,
                 status = PaymentStatus.fromString(response.status),
                 childKeyIndex = response.child_key_index,
+                metadata = response.metadata,
             )
         }
     }

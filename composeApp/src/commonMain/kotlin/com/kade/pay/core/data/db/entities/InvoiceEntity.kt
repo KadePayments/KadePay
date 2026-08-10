@@ -2,6 +2,8 @@ package com.kade.pay.core.data.db.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.kade.pay.core.data.db.MapStringConverter
 import com.kade.pay.core.data.models.Chain
 import com.kade.pay.core.data.models.Invoice
 import com.kade.pay.core.data.models.PaymentStatus
@@ -21,6 +23,8 @@ data class InvoiceEntity(
     val description: String?,
     val status: String,
     val childKeyIndex: Int,
+    @TypeConverters(MapStringConverter::class)
+    val metadata: Map<String, String>,
 ) {
     fun toInvoice(): Invoice =
         Invoice(
@@ -35,6 +39,7 @@ data class InvoiceEntity(
             description,
             PaymentStatus.fromString(status),
             childKeyIndex,
+            metadata,
         )
 
     companion object {
@@ -54,6 +59,7 @@ data class InvoiceEntity(
                 invoice.description,
                 status.name.lowercase(),
                 invoice.childKeyIndex,
+                invoice.metadata,
             )
         }
     }

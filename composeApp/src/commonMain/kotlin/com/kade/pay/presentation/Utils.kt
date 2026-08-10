@@ -53,3 +53,47 @@ fun String.toUpperCaseFirstLetter(): String =
     this.lowercase().replaceFirstChar {
         it.titlecase()
     }
+
+object Uri {
+    fun encode(value: String): String =
+        buildString {
+            for (char in value) {
+                when (char) {
+                    ' ' -> append("%20")
+                    '"' -> append("%22")
+                    '#' -> append("%23")
+                    '%' -> append("%25")
+                    '&' -> append("%26")
+                    '/' -> append("%2F")
+                    ':' -> append("%3A")
+                    '=' -> append("%3D")
+                    '?' -> append("%3F")
+                    '{' -> append("%7B")
+                    '}' -> append("%7D")
+                    else -> append(char)
+                }
+            }
+        }
+
+    fun decode(value: String): String {
+        var result = value
+        val replacements =
+            mapOf(
+                "%20" to " ",
+                "%22" to "\"",
+                "%23" to "#",
+                "%25" to "%",
+                "%26" to "&",
+                "%2F" to "/",
+                "%3A" to ":",
+                "%3D" to "=",
+                "%3F" to "?",
+                "%7B" to "{",
+                "%7D" to "}",
+            )
+        replacements.forEach { (encoded, decoded) ->
+            result = result.replace(encoded, decoded)
+        }
+        return result
+    }
+}

@@ -32,6 +32,8 @@ ktor = "3.5.1"
 bignum = "0.3.10"
 dateTime = "0.8.0"
 qr = "4.5.0"
+kotlinSerialization = "1.11.0"
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -88,6 +90,8 @@ kotlin-bignum = { module = "com.ionspin.kotlin:bignum", version.ref = "bignum" }
 kotlin-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "dateTime" }
 
 kotlin-g0dkar-qr = { module = "io.github.g0dkar:qrcode-kotlin", version.ref = "qr" }
+
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

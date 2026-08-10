@@ -36,6 +36,7 @@ class KadePayClientImpl(
                 invoice.currencyCode,
                 invoice.amount.toString(),
                 invoice.description ?: "",
+                invoice.metadata,
             )
         val response = invoicesClient.CreateInvoice().execute(request)
         return Invoice.fromResponse(response)
