@@ -19,14 +19,16 @@ object MapNavType : NavType<Map<String, String>>(false) {
     ): Map<String, String> = bundle.read { Json.decodeFromString(getString(key)) }
 
     override fun parseValue(value: String): Map<String, String> =
-        value.split("&").associate {
+        Uri.decode(value).split("&").associate {
             val (key, value) = it.split("=")
             key to value
         }
 
     override fun serializeAsValue(value: Map<String, String>): String =
-        value
-            .map {
-                "${it.key}=${it.value}"
-            }.joinToString("&")
+        Uri.encode(
+            value
+                .map {
+                    "${it.key}=${it.value}"
+                }.joinToString("&"),
+        )
 }
